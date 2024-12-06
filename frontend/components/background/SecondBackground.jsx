@@ -1,6 +1,7 @@
-'use client'
+'use client'; 
 
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import React, { useRef, useEffect } from "react";
 
 export default function SecondBackground() {
@@ -12,10 +13,7 @@ export default function SecondBackground() {
     const renderer = new THREE.WebGLRenderer();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    
-
-
-    
+    camera.position.z = 5;
 
     if (mountRef.current) {
       mountRef.current.appendChild(renderer.domElement);
@@ -27,32 +25,32 @@ export default function SecondBackground() {
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
 
-    // window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize);
+
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
 
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
-    camera.position.set(2,2,10)
-    
+    camera.position.set(2, 2, 10);
+    orbitControls.update();
 
-    
-
-    const BoxGeometry = new THREE.BoxGeometry(1,1,1);
-    const BoxMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+    const BoxGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const BoxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const box = new THREE.Mesh(BoxGeometry, BoxMaterial);
     scene.add(box);
 
-    function animate(){
-        requestAnimationFrame(animate);
-        box.rotation.x += 0.01;
-        box.rotation.y += 0.01;
-        renderer.render(scene, camera);
+    function animate() {
+      requestAnimationFrame(animate);
+      box.rotation.x += 0.01;
+      box.rotation.y += 0.01;
+      renderer.render(scene, camera);
     }
-    
+
     animate();
-    
+
     return () => {
-    //   window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
