@@ -75,6 +75,15 @@ body {
   }
 }
 
-
-
-
+.header {
+  position: fixed; /* Position the header over the background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.0); /* Translucent background */
+  color: var(--primary-foreground);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem;
+  z-index: 1000; /* Ensure the header is above other elements */
+}
