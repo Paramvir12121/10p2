@@ -1,10 +1,11 @@
-import Checkbox from "@/components/ui/checkbox";
+import {Checkbox} from "@/components/ui/checkbox";
 
-export default function TodoItem({ title, completed }) {
+export default function TodoItem({ title, completed, id, toggleTodo }) {
     return (
         <div className="todo-item">
-           {/* <Checkbox checked={completed} /> */}
-            <p>{title}</p>
+           <Checkbox 
+           onCheckedChange={() => toggleTodo(id)}   />
+            {title}
         </div>
     );
 }
