@@ -1,8 +1,10 @@
+// Code: Todo component
 import {
     Card
   } from "@/components/ui/card"
   
 import TodoItem from "./TodoItem";
+import Checkbox from "@/components/ui/checkbox";
 
 var todos = [
     {
@@ -27,7 +29,9 @@ export default function Todo() {
         <Card className="todo">
             <h1>Todo List</h1>
         {todos.map((todo) => (  
+            <>
             <TodoItem title={todo.title} completed={todo.completed} key={todo.id}/>
+            </>
         ))}
        
 
