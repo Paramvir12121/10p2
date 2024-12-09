@@ -1,19 +1,23 @@
 import "./globals.css";
-import Head from "next/head";
+
+
 
 export const metadata = {
   title: "10p2",
-  description: "The better pomodoro",
+  description: "The Better Pomodoro",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
-      </Head>
-      <body>{children}</body>
+        {/* <link rel="icon" href="/favicon.ico" /> */}
+      </head>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }

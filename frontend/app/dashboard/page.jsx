@@ -1,16 +1,15 @@
-"use client"; // Ensure Dashboard is treated as a Client Component
+import CozyBackground from "@/components/background/CozyBackground";
 
-import dynamic from "next/dynamic";
-
-// Dynamically import SecondBackground with SSR disabled
-const SecondBackground = dynamic(() => import("@/components/background/SecondBackground"), {
-  ssr: false,
-});
-
-export default function Dashboard() {
+export default function dashboard() {
   return (
-    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-      <SecondBackground />
+    <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
+      <CozyBackground />
+      
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
+        Hello
+      </div>
     </div>
+    
+   
   );
 }
