@@ -2,8 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {Checkbox} from "@/components/ui/checkbox";  
+import {Button} from "@/components/ui/button"; 
 import TodoItem from "./TodoItem";
 import { useState } from "react";
 
@@ -23,10 +22,11 @@ export default function Todo() {
     };
 
     const toggleTodo = (id) => {
-        console.log(id, todos[id].completed);
+        console.log("before",id, todos[id].completed);
         setTodos(todos.map(todo => 
             todo.id === id ? { ...todo, completed: !todo.completed } : todo
         ));
+        console.log("after",id, todos[id].completed);
     };
 
 
