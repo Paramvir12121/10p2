@@ -1,17 +1,9 @@
 'use client';
 
-import { Card } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button"; 
 import TodoItem from "./TodoItem";
 import { useState } from "react";
-import { ChevronsUpDown } from "lucide-react";
-
-  import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-  } from "@/components/ui/collapsible"
 import DashboardCard from "@/components/Custom/DashboardCard";
 
 export default function Todo() {
@@ -26,14 +18,28 @@ export default function Todo() {
     const [newTodo, setNewTodo] = useState("");
 
     const handleAddTodo = () => {
-        if (!newTodo) return;
-        setTodos([...todos, { id: todos.length + 1, title: newTodo, completed: false }]);
+        if (newTodo.trim() === '') return;
+    
+        // Create and add new todo
+        const newTodoItem = {
+            id: Date.now(),
+            title: newTodo,
+            completed: false
+        };
+        setTodos([...todos, newTodoItem]);
+        
+        // Clear the input
+        setNewTodo('');
     };
 
     const toggleTodo = (id) => {
         setTodos(todos.map(todo => 
             todo.id === id ? { ...todo, completed: !todo.completed } : todo
         ));
+    }
+
+    const deleteTodo = (id) => {   
+        setTodos(todos.filter(todo => todo.id !== id));
     }
 
 
@@ -45,6 +51,7 @@ export default function Todo() {
                     title={todo.title} 
                     toggleTodo={toggleTodo} 
                     id={todo.id} 
+                    deleteTodo={deleteTodo}
                     completed={todo.completed} 
                     key={todo.id} 
                 />
@@ -68,6 +75,7 @@ export default function Todo() {
                     title={todo.title} 
                     toggleTodo={toggleTodo} 
                     id={todo.id} 
+                    deleteTodo={deleteTodo}
                     completed={todo.completed} 
                     key={todo.id} 
                 />
