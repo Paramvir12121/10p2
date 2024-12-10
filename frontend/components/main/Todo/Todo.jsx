@@ -5,6 +5,14 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button"; 
 import TodoItem from "./TodoItem";
 import { useState } from "react";
+import { ChevronsUpDown } from "lucide-react";
+
+  import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+  } from "@/components/ui/collapsible"
+import DashboardCard from "@/components/Custom/DashboardCard";
 
 export default function Todo() {
     const [todos, setTodos] = useState([
@@ -31,14 +39,17 @@ export default function Todo() {
 
     return (
         <>
-        <Card className="todo">
-            <h1>Todo List</h1>
-            {todos.filter(todo => !todo.completed).map((todo) => (
-               
-                <TodoItem title={todo.title} toggleTodo={toggleTodo}  id={todo.id} completed={todo.completed} key={todo.id} />
-              
+    <DashboardCard title="Pending Todos">
+        {todos.filter(todo => !todo.completed).map((todo) => (
+                <TodoItem 
+                    title={todo.title} 
+                    toggleTodo={toggleTodo} 
+                    id={todo.id} 
+                    completed={todo.completed} 
+                    key={todo.id} 
+                />
             ))}
-            <div className="add-todo">
+             <div className="add-todo">
                 <Input
                     type="text"
                     value={newTodo}
@@ -47,14 +58,22 @@ export default function Todo() {
                 />
                 <Button onClick={handleAddTodo}>Add</Button>
             </div>
-        </Card>
-        <br />
-        <Card className="todo">
-            <h1>Completed Todos</h1>
-            {todos.filter(todo => todo.completed).map((todo) => (
-                <TodoItem title={todo.title} toggleTodo={toggleTodo} id={todo.id} completed={todo.completed} key={todo.id} />
+            </DashboardCard>
+
+
+            
+        <DashboardCard title="Completed Todos">
+        {todos.filter(todo => todo.completed).map((todo) => (
+                <TodoItem 
+                    title={todo.title} 
+                    toggleTodo={toggleTodo} 
+                    id={todo.id} 
+                    completed={todo.completed} 
+                    key={todo.id} 
+                />
             ))}
-        </Card>
-        </> 
+            </DashboardCard>
+
+    </>
     );
 }

@@ -105,3 +105,15 @@ body {
   padding: 0.5rem;
   border-bottom: 1px solid var(--border);
 }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.add-todo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin: 0.5rem; */
+}

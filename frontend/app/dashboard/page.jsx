@@ -1,5 +1,5 @@
 import CozyBackground from "@/components/background/CozyBackground";
-import Todo from "@/components/main/Todo";
+import Todo from "@/components/main/Todo/Todo";
 
 export default function dashboard() {
   return (
@@ -7,7 +7,7 @@ export default function dashboard() {
       <CozyBackground />
       
       <div className="dashboard-content">
-        Hello
+        
         <Todo />
       </div>
     </div>
