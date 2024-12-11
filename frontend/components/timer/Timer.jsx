@@ -13,7 +13,6 @@ export default function Timer() {
 
     const accumulatedBreakTime = useRef(0);
 
- 
 
     
 
@@ -32,6 +31,7 @@ export default function Timer() {
 
 
     const handleStart = () => {
+        setBreakTimerRunning(false);
         setRunning(true);
     }
     const handleStop = () => {
@@ -60,8 +60,13 @@ export default function Timer() {
     // Break Timer
     useEffect(() => {
         if (time > 0 && time % 300 === 0) {
+            let breakTimePlaceholder = 0;
+            
             accumulatedBreakTime.current += 60;
-            setBreakTime(accumulatedBreakTime.current);
+            breakTimePlaceholder += accumulatedBreakTime.current;
+            
+            setBreakTime(breakTimePlaceholder);
+            console.log(breakTime)
         }
     }, [time]);
 
@@ -69,7 +74,9 @@ export default function Timer() {
         let interval;
         if (breakTimerRunning) {
             interval = setInterval(() => {
-                setTime((prevTime) => prevTime + 1);
+                
+                setBreakTime((prevTime) => prevTime - 1);
+                console.log(breakTime);
                 
             }, 1000);
         } else {
@@ -80,15 +87,29 @@ export default function Timer() {
     , [breakTimerRunning, breakTime]);
 
     useEffect(() => {
-        const hours = Math.floor(breakTime / 3600);
+        // const hours = Math.floor(breakTime / 3600);
         const minutes = Math.floor((breakTime % 3600) / 60);
         const seconds = breakTime % 60;
        
         setBreakDisplayTime(
-            `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`
+            `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
+
         )
     }   
     , [breakTime]);
+
+
+
+    const handleBreakStart = () => {
+        setBreakTimerRunning(true);
+    }
+    const handleBreakStop = () => {
+        setBreakTimerRunning(false);
+    }
+    const handleBreakEnd = () => {
+        setBreakTime(0);
+        setBreakTimerRunning(false);
+    }
 
 
     return (
@@ -108,9 +129,9 @@ export default function Timer() {
                     <h1 className="text-4xl font-bold">{breakDisplayTime}</h1>
                 </div>
                 <div className="flex justify-center">
-                    <Button className="btn btn-primary" onClick={handleStart}>Start</Button>
-                    <Button className="btn btn-secondary" onClick={handleStop}>Stop</Button>
-                    <Button className="btn btn-tertiary" onClick={handleReset}>Reset</Button>
+                    <Button className="btn btn-primary" onClick={handleBreakStart}>Start</Button>
+                    <Button className="btn btn-secondary" onClick={handleBreakStop}>Stop</Button>
+                    <Button className="btn btn-tertiary" onClick={handleBreakEnd}>End</Button>
                 </div>
             </DashboardCard>
         </>
