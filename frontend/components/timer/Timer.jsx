@@ -10,6 +10,7 @@ export default function Timer() {
     const [breakTime, setBreakTime] = useState(false);
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
+    const [breakTimePlaceholder, setBreakTimePlaceholder] = useState(0);
 
     const accumulatedBreakTime = useRef(0);
 
@@ -59,13 +60,16 @@ export default function Timer() {
 
     // Break Timer
     useEffect(() => {
-        if (time > 0 && time % 300 === 0) {
+        if (time > 0 ) {
             let breakTimePlaceholder = 0;
+            if (time % 300 === 0) {
+                breakTimePlaceholder += 60;
+            }
             
-            accumulatedBreakTime.current += 60;
-            breakTimePlaceholder += accumulatedBreakTime.current;
+            accumulatedBreakTime.current += breakTimePlaceholder;
             
-            setBreakTime(breakTimePlaceholder);
+            
+            setBreakTime(accumulatedBreakTime.current);
             console.log(breakTime)
         }
     }, [time]);
