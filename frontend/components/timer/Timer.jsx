@@ -7,6 +7,9 @@ export default function Timer() {
     const [time, setTime] = useState(0);
     const [running, setRunning] = useState(false);  
     const [displayTime, setDisplayTime] = useState("00:00:00");
+    const [breakTime, setBreakTime] = useState(false);
+    const [breakTimerRunning, setBreakTimerRunning] = useState(false);
+
 
     
 
@@ -50,9 +53,42 @@ export default function Timer() {
     }   
     , [time]);
 
+    useEffect(() => {
+        if (breakTimerRunning) {
+            interval = setInterval(() => {
+                setTime((prevTime) => prevTime + 1);
+                
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }
+    , [breakTimerRunning, breakTime]);
+
+    useEffect(() => {
+        const hours = Math.floor(breakTime / 3600);
+        const minutes = Math.floor((breakTime % 3600) / 60);
+        const seconds = breakTime % 60;
+       
+        setDisplayTime(
+            `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
+        )
+    }   
+    , [breakTime]);
+
 
     return (
         <>
+            <DashboardCard title="Timer">
+                <div className="flex justify-center items-center h-32">
+                    <h1 className="text-4xl font-bold">{displayTime}</h1>
+                </div>
+                <div className="flex justify-center">
+                    <Button className="btn btn-primary" onClick={handleStart}>Start</Button>
+                    <Button className="btn btn-secondary" onClick={handleStop}>Stop</Button>
+                    <Button className="btn btn-tertiary" onClick={handleReset}>Reset</Button>
+                </div>
+            </DashboardCard>
+            <br />
             <DashboardCard title="Timer">
                 <div className="flex justify-center items-center h-32">
                     <h1 className="text-4xl font-bold">{displayTime}</h1>
