@@ -1,5 +1,5 @@
 'use client';
-import {useState, useEffect} from "react";
+import {useState, useRef, useEffect} from "react";
 import DashboardCard from "../custom/DashboardCard";
 import {Button} from "../ui/button";
 
@@ -11,6 +11,9 @@ export default function Timer() {
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
 
+    const accumulatedBreakTime = useRef(0);
+
+ 
 
     
 
@@ -18,7 +21,7 @@ export default function Timer() {
         let interval;
         if (running) {
             interval = setInterval(() => {
-                setTime((prevTime) => prevTime + 1);
+                setTime((prevTime) => prevTime + 60);
                 
             }, 1000);
         } else {
@@ -53,6 +56,14 @@ export default function Timer() {
         }
     }   
     , [time]);
+
+    // Break Timer
+    useEffect(() => {
+        if (time > 0 && time % 300 === 0) {
+            accumulatedBreakTime.current += 60;
+            setBreakTime(accumulatedBreakTime.current);
+        }
+    }, [time]);
 
     useEffect(() => {
         let interval;
