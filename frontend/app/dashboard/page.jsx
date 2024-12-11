@@ -7,12 +7,14 @@ export default function dashboard() {
     <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
       <CozyBackground />   
       <div className="dashboard-content">
-        <div className="left-row">
+      <div className="grid-container">
+        <div className="left-column">
         <Todo />
         </div>
-        <div className="right-row">
+        <div className="right-column">
         <Timer />
         </div>
+      </div>
       </div>
     </div>
     

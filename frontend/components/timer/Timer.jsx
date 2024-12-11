@@ -9,6 +9,7 @@ export default function Timer() {
     const [displayTime, setDisplayTime] = useState("00:00:00");
     const [breakTime, setBreakTime] = useState(false);
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
+    const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
 
 
     
@@ -54,11 +55,14 @@ export default function Timer() {
     , [time]);
 
     useEffect(() => {
+        let interval;
         if (breakTimerRunning) {
             interval = setInterval(() => {
                 setTime((prevTime) => prevTime + 1);
                 
             }, 1000);
+        } else {
+            clearInterval(interval);
         }
         return () => clearInterval(interval);
     }
@@ -69,8 +73,8 @@ export default function Timer() {
         const minutes = Math.floor((breakTime % 3600) / 60);
         const seconds = breakTime % 60;
        
-        setDisplayTime(
-            `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
+        setBreakDisplayTime(
+            `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`
         )
     }   
     , [breakTime]);
@@ -88,10 +92,9 @@ export default function Timer() {
                     <Button className="btn btn-tertiary" onClick={handleReset}>Reset</Button>
                 </div>
             </DashboardCard>
-            <br />
-            <DashboardCard title="Timer">
+            <DashboardCard title="Break Timer">
                 <div className="flex justify-center items-center h-32">
-                    <h1 className="text-4xl font-bold">{displayTime}</h1>
+                    <h1 className="text-4xl font-bold">{breakDisplayTime}</h1>
                 </div>
                 <div className="flex justify-center">
                     <Button className="btn btn-primary" onClick={handleStart}>Start</Button>
