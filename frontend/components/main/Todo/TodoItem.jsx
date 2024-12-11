@@ -9,7 +9,7 @@ export default function TodoItem({ title, completed, id, toggleTodo,deleteTodo }
            <Checkbox checked={completed}
            onCheckedChange={() => toggleTodo(id)}   />
             {" "} {title}</div>
-            <Trash onClick={() => deleteTodo(id)} className="delete-todo"/>
+            <Trash onClick={() => deleteTodo(id)} size="sm"  className="h-4 w-4 delete-icon"/>
         </div>
     );
 }

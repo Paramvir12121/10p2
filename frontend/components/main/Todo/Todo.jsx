@@ -13,6 +13,8 @@ export default function Todo() {
         { id: 3, title: "Learn Tailwind CSS", completed: false },
         { id: 4, title: "Learn GraphQL", completed: false },
         { id: 5, title: "Learn TypeScript", completed: false },
+        { id: 6, title: "Learn Webpack", completed: false },
+        { id: 7, title: "Learn Babel", completed: false },
     ]);
 
     const [newTodo, setNewTodo] = useState("");

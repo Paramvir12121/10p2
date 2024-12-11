@@ -123,3 +123,7 @@ body {
   justify-content: space-between;
   align-items: start;
 }
+
+.delete-icon {
+  cursor: pointer;
+}
