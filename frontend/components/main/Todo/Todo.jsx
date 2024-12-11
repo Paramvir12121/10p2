@@ -4,7 +4,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button"; 
 import TodoItem from "./TodoItem";
 import { useState } from "react";
-import DashboardCard from "@/components/Custom/DashboardCard";
+import DashboardCard from "@/components/custom/DashboardCard";
 
 export default function Todo() {
     const [todos, setTodos] = useState([
