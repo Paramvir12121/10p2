@@ -10,9 +10,8 @@ export default function Timer() {
     const [breakTime, setBreakTime] = useState(false);
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
-    const [breakTimePlaceholder, setBreakTimePlaceholder] = useState(0);
 
-    const accumulatedBreakTime = useRef(0);
+    var Session = [ {"time": 0, "breakTime": 0, "running": false}];
 
 
     
@@ -43,6 +42,12 @@ export default function Timer() {
         setRunning(false);
     }
 
+    // const handleBreakEnd = () => {
+    //    console.log("Break Ended");
+    //     setBreakTime(0);
+    //     setBreakTimerRunning(false);
+    // }
+
     useEffect(() => {
         const hours = Math.floor(time / 3600);
         const minutes = Math.floor((time % 3600) / 60);
@@ -60,17 +65,8 @@ export default function Timer() {
 
     // Break Timer
     useEffect(() => {
-        if (time > 0 ) {
-            let breakTimePlaceholder = 0;
-            if (time % 300 === 0) {
-                breakTimePlaceholder += 60;
-            }
-            
-            accumulatedBreakTime.current += breakTimePlaceholder;
-            
-            
-            setBreakTime(accumulatedBreakTime.current);
-            console.log(breakTime)
+        if (time > 0  && time % 300 === 0) {
+                setBreakTime(prevTime => prevTime + 60);
         }
     }, [time]);
 
@@ -78,17 +74,17 @@ export default function Timer() {
         let interval;
         if (breakTimerRunning) {
             interval = setInterval(() => {
-                
-                setBreakTime((prevTime) => prevTime - 1);
-                console.log(breakTime);
-                
+                setBreakTime((prevTime) => {
+                    if (prevTime <= 1) {
+                        handleBreakEnd();
+                        return 0;
+                    }
+                    return (prevTime - 10);
+                });
             }, 1000);
-        } else {
-            clearInterval(interval);
         }
         return () => clearInterval(interval);
-    }
-    , [breakTimerRunning, breakTime]);
+    }, [breakTimerRunning]);
 
     useEffect(() => {
         // const hours = Math.floor(breakTime / 3600);
@@ -105,6 +101,7 @@ export default function Timer() {
 
 
     const handleBreakStart = () => {
+        setRunning(false); 
         setBreakTimerRunning(true);
     }
     const handleBreakStop = () => {
@@ -113,7 +110,18 @@ export default function Timer() {
     const handleBreakEnd = () => {
         setBreakTime(0);
         setBreakTimerRunning(false);
+        console.log("Break Ended");
     }
+
+    const handleSessionEnd = () => {
+        
+        setRunning(false);
+        setBreakTimerRunning(false);
+        setTime(0);
+        setBreakTime(0);
+
+    }
+
 
 
     return (
@@ -123,8 +131,7 @@ export default function Timer() {
                     <h1 className="text-4xl font-bold">{displayTime}</h1>
                 </div>
                 <div className="flex justify-center">
-                    <Button className="btn btn-primary" onClick={handleStart}>Start</Button>
-                    <Button className="btn btn-secondary" onClick={handleStop}>Stop</Button>
+                {running ? <Button variant="destructive" className="btn btn-secondary" onClick={handleStop}>Stop</Button> : <Button className="btn btn-primary" onClick={handleStart}>Start</Button>}
                     <Button className="btn btn-tertiary" onClick={handleReset}>Reset</Button>
                 </div>
             </DashboardCard>
@@ -133,8 +140,7 @@ export default function Timer() {
                     <h1 className="text-4xl font-bold">{breakDisplayTime}</h1>
                 </div>
                 <div className="flex justify-center">
-                    <Button className="btn btn-primary" onClick={handleBreakStart}>Start</Button>
-                    <Button className="btn btn-secondary" onClick={handleBreakStop}>Stop</Button>
+                    {breakTimerRunning ? <Button variant="destructive" className="btn btn-secondary" onClick={handleBreakStop}>Stop</Button> : <Button className="btn btn-primary" onClick={handleBreakStart}>Start</Button>}
                     <Button className="btn btn-tertiary" onClick={handleBreakEnd}>End</Button>
                 </div>
             </DashboardCard>
