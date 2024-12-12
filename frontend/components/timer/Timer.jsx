@@ -114,11 +114,12 @@ export default function Timer() {
     }
 
     const handleSessionEnd = () => {
-        
+        Session.push({ time: time, breakTime: breakTime, running: running });
         setRunning(false);
         setBreakTimerRunning(false);
         setTime(0);
         setBreakTime(0);
+        console.log(Session); //replace with API call to save session data
 
     }
 
@@ -141,7 +142,7 @@ export default function Timer() {
                 </div>
                 <div className="flex justify-center">
                     {breakTimerRunning ? <Button variant="destructive" className="btn btn-secondary" onClick={handleBreakStop}>Stop</Button> : <Button className="btn btn-primary" onClick={handleBreakStart}>Start</Button>}
-                    <Button className="btn btn-tertiary" onClick={handleBreakEnd}>End</Button>
+                    <Button className="btn btn-tertiary" onClick={handleSessionEnd}>End</Button>
                 </div>
             </DashboardCard>
         </>
