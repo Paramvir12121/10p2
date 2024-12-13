@@ -2,8 +2,10 @@ import CozyBackground from "@/components/background/CozyBackground";
 import Todo from "@/components/main/Todo/Todo";
 import Timer from "@/components/main/timer/Timer";
 
+const session = [{"time": 0, "breakTime": 0, "running": false}];
+
 export default function dashboard() {
-  
+
   return (
     <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
       <CozyBackground />   
@@ -18,7 +20,6 @@ export default function dashboard() {
       </div>
       </div>
     </div>
-    
-   
+       
   );
 }
