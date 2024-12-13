@@ -2,7 +2,16 @@ import CozyBackground from "@/components/background/CozyBackground";
 import Todo from "@/components/main/Todo/Todo";
 import Timer from "@/components/main/timer/Timer";
 
-const session = [{"time": 0, "breakTime": 0, "running": false}];
+const timerSession = [{"time": 0, "breakTime": 0, "running": false}];
+
+const addTimerSessioninfo = (time, breakTime, running) => {
+  timerSession.push({"time": time, "breakTime": breakTime, "running": running});
+}
+
+const getTimerSessioninfo = () => {
+  return timerSession;
+}
+
 
 export default function dashboard() {
 
@@ -12,10 +21,10 @@ export default function dashboard() {
       <div className="dashboard-content">
       <div className="grid-container">
         <div className="left-column">
-        <Todo />
+        <Todo  addTimerSessioninfo={addTimerSessioninfo} getTimerSessioninfo={getTimerSessioninfo}/>
         </div>
         <div className="right-column">
-        <Timer />
+        <Timer addTimerSessioninfo={addTimerSessioninfo} getTimerSessioninfo={getTimerSessioninfo} />
         </div>
       </div>
       </div>

@@ -5,7 +5,7 @@ import {Button} from "../../ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast"
 
-export default function Timer() {
+export default function Timer({addTimerSessioninfo, getTimerSessioninfo}) {
     const [time, setTime] = useState(0);
     const [running, setRunning] = useState(false);  
     const [displayTime, setDisplayTime] = useState("00:00:00");
@@ -14,7 +14,8 @@ export default function Timer() {
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
     const { toast } = useToast();
 
-    var Session = [ {"time": 0, "breakTime": 0, "running": false}];
+    const Session = useRef(getTimerSessioninfo());
+    
 
 
     
