@@ -1,5 +1,6 @@
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import {Toaster} from "@/components/ui/toaster";
 
 
 export const metadata = {
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
       <body>
         <Header />
         {children}
+        <Toaster />
       </body>
     </html>
   );

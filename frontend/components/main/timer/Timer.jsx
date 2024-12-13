@@ -1,7 +1,9 @@
 'use client';
 import {useState, useRef, useEffect} from "react";
-import DashboardCard from "../custom/DashboardCard";
-import {Button} from "../ui/button";
+import DashboardCard from "../../custom/DashboardCard";
+import {Button} from "../../ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast"
 
 export default function Timer() {
     const [time, setTime] = useState(0);
@@ -10,6 +12,7 @@ export default function Timer() {
     const [breakTime, setBreakTime] = useState(false);
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
+    const { toast } = useToast();
 
     var Session = [ {"time": 0, "breakTime": 0, "running": false}];
 
@@ -42,11 +45,7 @@ export default function Timer() {
         setRunning(false);
     }
 
-    // const handleBreakEnd = () => {
-    //    console.log("Break Ended");
-    //     setBreakTime(0);
-    //     setBreakTimerRunning(false);
-    // }
+    
 
     useEffect(() => {
         const hours = Math.floor(time / 3600);
@@ -111,6 +110,12 @@ export default function Timer() {
         setBreakTime(0);
         setBreakTimerRunning(false);
         console.log("Break Ended");
+        
+        toast({
+            title: "Break Ended",
+            description: "Your break has ended. Time to get back to work!",
+            variant: "default",
+        });
     }
 
     const handleSessionEnd = () => {
@@ -144,6 +149,7 @@ export default function Timer() {
                     {breakTimerRunning ? <Button variant="destructive" className="btn btn-secondary" onClick={handleBreakStop}>Stop</Button> : <Button className="btn btn-primary" onClick={handleBreakStart}>Start</Button>}
                     <Button className="btn btn-tertiary" onClick={handleSessionEnd}>End</Button>
                 </div>
+              
             </DashboardCard>
         </>
     );

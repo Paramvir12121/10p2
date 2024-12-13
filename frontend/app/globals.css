@@ -120,9 +120,7 @@ html, body {
   height: 100%;
 }
 
-button {
-  
-}
+
 
 
 
@@ -136,6 +134,8 @@ button {
   display: flex;
   margin: 0.5rem;
   flex-direction: column;
+  min-width: 150px;
+  max-width: 300px;
   width: 30vh;
   padding: 0.5rem;
   border-bottom: 1px solid var(--border);

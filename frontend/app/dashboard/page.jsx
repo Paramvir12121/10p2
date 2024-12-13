@@ -1,8 +1,9 @@
 import CozyBackground from "@/components/background/CozyBackground";
 import Todo from "@/components/main/Todo/Todo";
-import Timer from "@/components/timer/Timer";
+import Timer from "@/components/main/timer/Timer";
 
 export default function dashboard() {
+  
   return (
     <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
       <CozyBackground />   
