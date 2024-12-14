@@ -3,7 +3,6 @@ import {useState, useRef, useEffect} from "react";
 import DashboardCard from "../../custom/DashboardCard";
 import {Button} from "../../ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast"
 
 export default function Timer({addTimerSessioninfo, getTimerSessioninfo}) {
     const [time, setTime] = useState(0);
