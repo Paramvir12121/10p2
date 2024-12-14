@@ -34,7 +34,7 @@ export default function dashboard() {
       <div className="dashboard-content">
       <div className="grid-container">
         <div className="left-column">
-        <Todo  addTimerSessioninfo={addTimerSessioninfo} const  getTimerSessioninfo={getTimerSessioninfo}/>
+        <Todo  addTimerSessioninfo={addTimerSessioninfo}  getTimerSessioninfo={getTimerSessioninfo}/>
         </div>
         <div className="right-column">
         <Timer addTimerSessioninfo={addTimerSessioninfo} getTimerSessioninfo={getTimerSessioninfo} />

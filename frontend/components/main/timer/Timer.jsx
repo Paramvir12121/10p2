@@ -13,9 +13,9 @@ export default function Timer({addTimerSessioninfo, getTimerSessioninfo}) {
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
     const { toast } = useToast();
 
-    const Session = useRef(getTimerSessioninfo());
+    const [Session, setSession] = useState([]);
     
-
+// work in timer sessions 
 
     
 
