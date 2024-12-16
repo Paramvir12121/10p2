@@ -5,9 +5,20 @@ import {Button} from "@/components/ui/button";
 import TodoItem from "./TodoItem";
 import { useState } from "react";
 import DashboardCard from "@/components/custom/DashboardCard";
+import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 
+function Droppable() {
+    const {setNodeRef} = useDroppable({
+      id: 'droppable',
+      data: {
+        accepts: ['type1', 'type2'],
+      },
+    });
+  
+    /* ... */
+  }
 
-
+  
 
 
 
@@ -55,6 +66,7 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
 
     return (
         <>
+         <DndContext >
     <DashboardCard title="Pending Todos">
         {todos.filter(todo => !todo.completed).map((todo) => (
                 <TodoItem 
@@ -80,11 +92,12 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                 <Button onClick={handleAddTodo}>Add</Button>
             </div>
             </DashboardCard>
+            </DndContext>
             
             
 
 
-            
+            <DndContext >
         <DashboardCard title="Completed Todos">
         {todos.filter(todo => todo.completed).map((todo) => (
                 <TodoItem 
@@ -97,6 +110,7 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                 />
             ))}
             </DashboardCard>
+            </DndContext>
 
     </>
     );
