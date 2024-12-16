@@ -5,9 +5,10 @@ import { CSS } from '@dnd-kit/utilities';
 
 
 
-export default function TodoItem({ title, completed, id, toggleTodo,deleteTodo }) {
+export default function TodoItem({ title, completed, id, toggleTodo, deleteTodo }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
         id: id,
+        type: 'todo',
       });
     
       const style = {

@@ -9,21 +9,28 @@ import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 
 function Droppable() {
     const {setNodeRef} = useDroppable({
-      id: 'droppable',
+      id: 'todo',
       data: {
-        accepts: ['type1', 'type2'],
+        accepts: ['todo', 'type2'],
       },
     });
   
     /* ... */
   }
 
+  const handleDragEnd = (event) => {
+    const {active, over} = event;
+    if (over && over.id === 'timer') {
+      // Handle drop into timer
+      console.log('Dropped todo into timer:', active.id);
+    }
+  };
   
 
 
 
 export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
-    const [todos, setTodos] = useState([
+    let [todos, setTodos] = useState([
         { id: 1, title: "Learn React", completed: true },
         { id: 2, title: "Learn Next.js", completed: false },
         { id: 3, title: "Learn Tailwind CSS", completed: false },
@@ -66,51 +73,40 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
 
     return (
         <>
-         <DndContext >
-    <DashboardCard title="Pending Todos">
-        {todos.filter(todo => !todo.completed).map((todo) => (
-                <TodoItem 
-                    title={todo.title} 
-                    toggleTodo={toggleTodo} 
-                    id={todo.id} 
-                    deleteTodo={deleteTodo}
-                    completed={todo.completed} 
-                    key={todo.id} 
-                />
+        
+        <DndContext>
+            <DashboardCard title="Pending Todos">
+                {todos.filter(todo => !todo.completed).map((todo) => (
+                    <TodoItem 
+                        key={todo.id}
+                        {...todo}
+                        toggleTodo={toggleTodo}
+                        deleteTodo={deleteTodo}
+                    />
+                ))}
                 
-            ))}
-            
-            
-            
-             <div className="add-todo">
-                <Input
-                    type="text"
-                    value={newTodo}
-                    onChange={(e) => setNewTodo(e.target.value)}
-                    placeholder="Add a new todo"
-                />
-                <Button onClick={handleAddTodo}>Add</Button>
-            </div>
+                <div className="add-todo">
+                    <Input
+                        type="text"
+                        value={newTodo}
+                        onChange={(e) => setNewTodo(e.target.value)}
+                        placeholder="Add a new todo"
+                    />
+                    <Button onClick={handleAddTodo}>Add</Button>
+                </div>
             </DashboardCard>
-            </DndContext>
-            
-            
-
-
-            <DndContext >
-        <DashboardCard title="Completed Todos">
-        {todos.filter(todo => todo.completed).map((todo) => (
-                <TodoItem 
-                    title={todo.title} 
-                    toggleTodo={toggleTodo} 
-                    id={todo.id} 
-                    deleteTodo={deleteTodo}
-                    completed={todo.completed} 
-                    key={todo.id} 
-                />
-            ))}
+           
+            <DashboardCard title="Completed Todos">
+                {todos.filter(todo => todo.completed).map((todo) => (
+                    <TodoItem 
+                        key={todo.id}
+                        {...todo}
+                        toggleTodo={toggleTodo}
+                        deleteTodo={deleteTodo}
+                    />
+                ))}
             </DashboardCard>
-            </DndContext>
+        </DndContext>
 
     </>
     );

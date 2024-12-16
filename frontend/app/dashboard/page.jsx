@@ -6,6 +6,14 @@ import { DndContext } from '@dnd-kit/core';
 
 const timerSession = [{"time": 0, "breakTime": 0, "running": false}];
 
+const handleDragEnd = (event) => {
+  const {active, over} = event;
+  if (over && over.id === 'timer') {
+    // Handle drop into timer
+    console.log('Dropped todo into timer:', active.id);
+  }
+};
+
 const addTimerSessioninfo = (time, breakTime, running) => {
   timerSession.push({"time": time, "breakTime": breakTime, "running": running});
 }
@@ -37,12 +45,14 @@ export default function dashboard() {
       <CozyBackground />   
       <div className="dashboard-content">
       <div className="grid-container">
+     
         <div className="left-column">
         <Todo  addTimerSessioninfo={addTimerSessioninfo}  getTimerSessioninfo={getTimerSessioninfo}/>
         </div>
         <div className="right-column">
         <Timer addTimerSessioninfo={addTimerSessioninfo} getTimerSessioninfo={getTimerSessioninfo} />
         </div>
+      
       </div>
       </div>
     </div>
