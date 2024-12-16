@@ -3,6 +3,7 @@ import Header from "@/components/layout/Header";
 import {Toaster} from "@/components/ui/toaster";
 
 
+
 export const metadata = {
   title: "10p2",
   description: "The Better Pomodoro",

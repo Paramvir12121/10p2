@@ -2,6 +2,7 @@
 import CozyBackground from "@/components/background/CozyBackground";
 import Todo from "@/components/main/Todo/Todo";
 import Timer from "@/components/main/timer/Timer";
+import { DndContext } from '@dnd-kit/core';
 
 const timerSession = [{"time": 0, "breakTime": 0, "running": false}];
 
@@ -26,9 +27,12 @@ const todoList = [
 
 
 
+
+
 export default function dashboard() {
 
   return (
+    
     <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
       <CozyBackground />   
       <div className="dashboard-content">
@@ -42,6 +46,8 @@ export default function dashboard() {
       </div>
       </div>
     </div>
+   
+
        
   );
 }

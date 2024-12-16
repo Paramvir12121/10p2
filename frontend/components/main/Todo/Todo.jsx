@@ -6,6 +6,11 @@ import TodoItem from "./TodoItem";
 import { useState } from "react";
 import DashboardCard from "@/components/custom/DashboardCard";
 
+
+
+
+
+
 export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
     const [todos, setTodos] = useState([
         { id: 1, title: "Learn React", completed: true },
@@ -60,7 +65,10 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                     completed={todo.completed} 
                     key={todo.id} 
                 />
+                
             ))}
+            
+            
             
              <div className="add-todo">
                 <Input
@@ -72,6 +80,8 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                 <Button onClick={handleAddTodo}>Add</Button>
             </div>
             </DashboardCard>
+            
+            
 
 
             
