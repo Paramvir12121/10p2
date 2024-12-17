@@ -13,11 +13,11 @@ export default function TodoItem({ title, completed, id, toggleTodo, deleteTodo 
         }
     });
 
-    const handleCheckboxChange = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleTodo(id);
-    };
+    // const handleCheckboxChange = (e) => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     toggleTodo(id);
+    // };
 
     const handleDelete = (e) => {
         e.preventDefault();
@@ -42,13 +42,7 @@ export default function TodoItem({ title, completed, id, toggleTodo, deleteTodo 
             className="todo-item"
         >
             <div {...attributes} {...listeners}>
-                <div onClick={e => e.stopPropagation()}>
-                    <Checkbox 
-                        checked={completed}
-                        onCheckedChange={handleCheckboxChange}
-                    />
-                    {" "}{title}
-                </div>
+                {title}
             </div>
             <Trash 
                 onClick={handleDelete}

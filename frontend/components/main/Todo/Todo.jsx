@@ -7,25 +7,23 @@ import { useState } from "react";
 import DashboardCard from "@/components/custom/DashboardCard";
 import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 
-function Droppable() {
-    const {setNodeRef} = useDroppable({
-      id: 'todo',
-      data: {
-        accepts: ['todo', 'type2'],
-      },
-    });
-  
-    /* ... */
-  }
 
-  const handleDragEnd = (event) => {
-    const {active, over} = event;
-    if (over && over.id === 'timer') {
-      // Handle drop into timer
-      console.log('Dropped todo into timer:', active.id);
-    }
-  };
-  
+function Droppable({id, children}) {
+    const {setNodeRef} = useDroppable({
+        id,
+        data: {
+            accepts: ['todo']
+        }
+    });
+
+    return (
+        <div ref={setNodeRef} >
+            {children}
+        </div>
+    );
+}
+
+
 
 
 
@@ -40,7 +38,21 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
         { id: 7, title: "Learn Babel", completed: false },
     ]);
 
-    
+    const handleDragEnd = (event) => {
+        const {active, over} = event;
+        
+        if (over) {
+            if (over.id === 'completed-todos') {
+                setTodos(todos.map(todo => 
+                    todo.id === active.id ? {...todo, completed: true} : todo
+                ));
+            } else if (over.id === 'pending-todos') {
+                setTodos(todos.map(todo => 
+                    todo.id === active.id ? {...todo, completed: false} : todo
+                ));
+            }
+        }
+    };
 
 
     const [newTodo, setNewTodo] = useState("");
@@ -74,8 +86,10 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
     return (
         <>
         
-        
+            <DndContext onDragEnd={handleDragEnd}>
+            <Droppable id="pending-todos">
             <DashboardCard title="Pending Todos">
+            
                 {todos.filter(todo => !todo.completed).map((todo) => (
                     <TodoItem 
                         key={todo.id}
@@ -84,6 +98,7 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                         deleteTodo={deleteTodo}
                     />
                 ))}
+           
                 
                 <div className="add-todo">
                     <Input
@@ -95,7 +110,9 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                     <Button onClick={handleAddTodo}>Add</Button>
                 </div>
             </DashboardCard>
-           
+            </Droppable>
+
+            <Droppable id="completed-todos">
             <DashboardCard title="Completed Todos">
                 {todos.filter(todo => todo.completed).map((todo) => (
                     <TodoItem 
@@ -106,7 +123,8 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                     />
                 ))}
             </DashboardCard>
-       
+            </Droppable>
+            </DndContext>
 
     </>
     );
