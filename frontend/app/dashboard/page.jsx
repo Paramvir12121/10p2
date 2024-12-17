@@ -44,6 +44,7 @@ export default function dashboard() {
     <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
       <CozyBackground />   
       <div className="dashboard-content">
+      <DndContext onDragEnd={handleDragEnd}>
       <div className="grid-container">
      
         <div className="left-column">
@@ -54,6 +55,7 @@ export default function dashboard() {
         </div>
       
       </div>
+      </DndContext>
       </div>
     </div>
    

@@ -74,7 +74,7 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
     return (
         <>
         
-        <DndContext>
+        
             <DashboardCard title="Pending Todos">
                 {todos.filter(todo => !todo.completed).map((todo) => (
                     <TodoItem 
@@ -106,7 +106,7 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
                     />
                 ))}
             </DashboardCard>
-        </DndContext>
+       
 
     </>
     );
