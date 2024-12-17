@@ -123,16 +123,13 @@ html, body {
 
 
 
-.droppable-area {
+/* .droppable-area {
   min-height: 100px;
   padding: 1rem;
   border: 2px dashed #e5e7eb;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
-}
-
-
-
+} */
 
 
 
@@ -176,3 +173,4 @@ html, body {
 .right-row {
   grid-column: 2 / 3;
 }
+

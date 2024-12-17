@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/button";
 import TodoItem from "./TodoItem";
 import { useState } from "react";
 import DashboardCard from "@/components/custom/DashboardCard";
-import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
+import { DndContext, useDraggable, useDroppable, DragOverlay } from '@dnd-kit/core';
 
 
 function Droppable({id, children}) {
@@ -28,6 +28,10 @@ function Droppable({id, children}) {
 
 
 export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
+    const [newTodo, setNewTodo] = useState("");
+    
+
+
     let [todos, setTodos] = useState([
         { id: 1, title: "Learn React", completed: true },
         { id: 2, title: "Learn Next.js", completed: false },
@@ -55,7 +59,17 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
     };
 
 
-    const [newTodo, setNewTodo] = useState("");
+    
+
+    // const style = transform ? {
+    //     transform: CSS.Transform.toString(transform),
+    //     opacity: isDragging ? 0.7 : 1,
+    //     background: isDragging ? "lightgreen" : "white",
+    //     width: "100%",
+    //     maxWidth: "300px",
+    //     height: "40px",
+    //     touchAction: "none"
+    // } : undefined;
 
     const handleAddTodo = () => {
         if (newTodo.trim() === '') return;
@@ -86,46 +100,46 @@ export default function Todo({addTimerSessioninfo, getTimerSessioninfo}) {
     return (
         <>
         
-            <DndContext onDragEnd={handleDragEnd}>
-            <Droppable id="pending-todos">
+        <DndContext onDragEnd={handleDragEnd}>
+        <Droppable id="pending-todos">
             <DashboardCard title="Pending Todos">
-            
-                {todos.filter(todo => !todo.completed).map((todo) => (
-                    <TodoItem 
-                        key={todo.id}
-                        {...todo}
-                        toggleTodo={toggleTodo}
-                        deleteTodo={deleteTodo}
-                    />
-                ))}
-           
-                
-                <div className="add-todo">
-                    <Input
-                        type="text"
-                        value={newTodo}
-                        onChange={(e) => setNewTodo(e.target.value)}
-                        placeholder="Add a new todo"
-                    />
-                    <Button onClick={handleAddTodo}>Add</Button>
+                <div className="todos-container">
+                    {todos.filter(todo => !todo.completed).map((todo) => (
+                        <TodoItem 
+                            key={todo.id}
+                            {...todo}
+                            toggleTodo={toggleTodo}
+                            deleteTodo={deleteTodo}
+                        />
+                    ))}
+                    <div className="add-todo">
+                        <Input
+                            type="text"
+                            value={newTodo}
+                            onChange={(e) => setNewTodo(e.target.value)}
+                            placeholder="Add a new todo"
+                        />
+                        <Button onClick={handleAddTodo}>Add</Button>
+                    </div>
                 </div>
             </DashboardCard>
-            </Droppable>
+        </Droppable>
 
-            <Droppable id="completed-todos">
+        <Droppable id="completed-todos">
             <DashboardCard title="Completed Todos">
-                {todos.filter(todo => todo.completed).map((todo) => (
-                    <TodoItem 
-                        key={todo.id}
-                        {...todo}
-                        toggleTodo={toggleTodo}
-                        deleteTodo={deleteTodo}
-                    />
-                ))}
+                <div className="todos-container">
+                    {todos.filter(todo => todo.completed).map((todo) => (
+                        <TodoItem 
+                            key={todo.id}
+                            {...todo}
+                            toggleTodo={toggleTodo}
+                            deleteTodo={deleteTodo}
+                        />
+                    ))}
+                </div>
             </DashboardCard>
-            </Droppable>
-            </DndContext>
-
+        </Droppable>
+    </DndContext>
     </>
     );
 }
