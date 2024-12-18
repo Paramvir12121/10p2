@@ -18,8 +18,8 @@ export default function DashboardCard({children, title}) {
     };
 
     return (
-        <Card className="todo">
-      <Collapsible className="custom-collapsible" open={isOpen} onOpenChange={setIsOpen}>
+        <Card className="todo" style={{ flexGrow: 0, flexShrink: 0 }}>
+      <Collapsible className="h-full" open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <div className="card-header" onClick={toggleCollapsible}>
             {title}
@@ -29,7 +29,7 @@ export default function DashboardCard({children, title}) {
             </Button>
           </div>
         </CollapsibleTrigger>
-        <CollapsibleContent>
+        <CollapsibleContent >
           {children}
         </CollapsibleContent>
       </Collapsible>

@@ -32,7 +32,9 @@ export default function TodoItem({ title, completed, id, toggleTodo, deleteTodo 
         padding: "0.5rem",
         borderRadius: "0.5rem",
         cursor: "grab",
-        touchAction: "none"
+        touchAction: "none",
+        flexShrink: "0 !important",
+        flexGrow: "0 !important",
     } : undefined;
 
     return (

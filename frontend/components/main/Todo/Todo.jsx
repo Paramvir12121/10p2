@@ -8,8 +8,8 @@ import DashboardCard from "@/components/custom/DashboardCard";
 import { DndContext, useDraggable, useDroppable, DragOverlay } from '@dnd-kit/core';
 
 
-function Droppable({id, children}) {
-    const {setNodeRef} = useDroppable({
+function Droppable({ id, children }) {
+    const { setNodeRef } = useDroppable({
         id,
         data: {
             accepts: ['todo']
@@ -17,7 +17,11 @@ function Droppable({id, children}) {
     });
 
     return (
-        <div ref={setNodeRef} >
+        <div
+            ref={setNodeRef}
+            className="droppable"
+            id={id}
+        >
             {children}
         </div>
     );

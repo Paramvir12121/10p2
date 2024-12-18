@@ -174,3 +174,8 @@ html, body {
   grid-column: 2 / 3;
 }
 
+.droppable {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
