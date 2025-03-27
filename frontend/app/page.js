@@ -1,14 +1,9 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="dashboard-content"> 
+    <div>
       Home
-      <br />
-      <Link href="/dashboard">
-      <Button>Dashboard</Button>
-      </Link>
     </div>
   );
 }
