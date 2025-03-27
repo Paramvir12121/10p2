@@ -4,13 +4,16 @@ import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useTheme } from "next-themes"
 import { 
   Clock, 
   Target, 
   Music, 
   Image, 
   Settings, 
-  Compass
+  Compass,
+  Sun,
+  Moon
 } from "lucide-react" // Using lucide-react icons
 
 const springConfig = {
@@ -23,14 +26,22 @@ export default function Navbar({ className, ...props }) {
   const navRef = React.useRef(null)
   const [tooltipPosition, setTooltipPosition] = React.useState({ left: 0, width: 0 })
   const tooltipRef = React.useRef(null)
+  const { theme, setTheme } = useTheme()
+  
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
+
+  const ThemeIcon = theme === 'dark' ? Sun : Moon
   
   const navItems = [
-    { icon: Clock, label: "Timer", path: "/timer" },
-    { icon: Target, label: "Goals", path: "/goals" },
-    { icon: Music, label: "Music", path: "/music" },
-    { icon: Image, label: "Background", path: "/background" },
+    { icon: Clock, label: "Timer", onClick: () => console.log("Timer clicked") },
+    { icon: Target, label: "Goals", onClick: () => console.log("Goals clicked") },
+    { icon: Music, label: "Music", onClick: () => console.log("Music clicked") },
+    { icon: Image, label: "Background", onClick: () => console.log("Background clicked") },
     { icon: Compass, label: "Inspiration", path: "/inspiration" },
-    { icon: Settings, label: "Settings", path: "/settings" }
+    { icon: ThemeIcon, label: "Toggle Theme", onClick: toggleTheme },
+    { icon: Settings, label: "Settings", onClick: () => console.log("Settings clicked") }
   ]
 
   React.useEffect(() => {
@@ -48,6 +59,13 @@ export default function Navbar({ className, ...props }) {
       })
     }
   }, [activeIndex])
+
+  const handleItemInteraction = (item, event) => {
+    if (item.onClick) {
+      event.preventDefault()
+      item.onClick()
+    }
+  }
 
   return (
     <nav className={cn("fixed bottom-8 left-1/2 -translate-x-1/2 z-50", className)} {...props}>
@@ -93,22 +111,29 @@ export default function Navbar({ className, ...props }) {
             "dark:border-border/50 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_8px_16px_-4px_rgba(0,0,0,0.2)]"
           )}
         >
-          {navItems.map((item, index) => (
-            <Link 
-              key={index}
-              href={item.path}
-              className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
-              onMouseEnter={() => setActiveIndex(index)}
-              onMouseLeave={() => setActiveIndex(null)}
-            >
-              <div className="flex justify-center items-center">
-                <div className="w-5 h-5 flex justify-center items-center">
-                  <item.icon className="w-full h-full" />
+          {navItems.map((item, index) => {
+            const NavElement = item.path ? Link : 'button';
+            const elementProps = item.path 
+              ? { href: item.path } 
+              : { type: 'button', onClick: (e) => handleItemInteraction(item, e) };
+              
+            return (
+              <NavElement
+                key={index}
+                {...elementProps}
+                className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
+                onMouseEnter={() => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
+              >
+                <div className="flex justify-center items-center">
+                  <div className="w-5 h-5 flex justify-center items-center">
+                    <item.icon className="w-full h-full" />
+                  </div>
                 </div>
-              </div>
-              <span className="sr-only">{item.label}</span>
-            </Link>
-          ))}
+                <span className="sr-only">{item.label}</span>
+              </NavElement>
+            );
+          })}
         </div>
       </div>
     </nav>
