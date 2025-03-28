@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useTheme } from "next-themes"
+import { useDashContext } from "@/provider/dashContext"
 import { 
   Clock, 
+  Home,
   Target, 
   Music, 
   Image, 
@@ -27,15 +29,24 @@ export default function Navbar({ className, ...props }) {
   const [tooltipPosition, setTooltipPosition] = React.useState({ left: 0, width: 0 })
   const tooltipRef = React.useRef(null)
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+  const { setOpenTimer } = useDashContext()
   
+  // Only show theme toggle after mounting to avoid hydration mismatch
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
-  const ThemeIcon = theme === 'dark' ? Sun : Moon
+  // Only after mounting do we use the theme-dependent icon logic
+   const ThemeIcon = !mounted ? Sun : theme === 'dark' ? Sun : Moon
   
   const navItems = [
-    { icon: Clock, label: "Timer", onClick: () => console.log("Timer clicked") },
+    { icon: Home, label: "Home", path: "/" },
+    { icon: Clock, label: "Timer", onClick: () => setOpenTimer(prev => !prev) },
     { icon: Target, label: "Goals", onClick: () => console.log("Goals clicked") },
     { icon: Music, label: "Music", onClick: () => console.log("Music clicked") },
     { icon: Image, label: "Background", onClick: () => console.log("Background clicked") },

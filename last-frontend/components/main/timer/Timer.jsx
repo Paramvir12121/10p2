@@ -2,7 +2,7 @@
 import {useState, useRef, useEffect} from "react";
 import DashboardCard from "../../custom/DashboardCard";
 import {Button} from "../../ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export default function Timer({addTimerSessioninfo, getTimerSessioninfo}) {
     const [time, setTime] = useState(0);
@@ -11,7 +11,6 @@ export default function Timer({addTimerSessioninfo, getTimerSessioninfo}) {
     const [breakTime, setBreakTime] = useState(false);
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
     const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
-    const { toast } = useToast();
 
     const [Session, setSession] = useState([]);
     
@@ -111,10 +110,9 @@ export default function Timer({addTimerSessioninfo, getTimerSessioninfo}) {
         setBreakTimerRunning(false);
         console.log("Break Ended");
         
-        toast({
-            title: "Break Ended",
+        toast.info("Break Ended", {
             description: "Your break has ended. Time to get back to work!",
-            variant: "default",
+            duration: 3000,
         });
     }
 

@@ -1,8 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider.jsx";
 import Footer from '@/components/layout/Footer'
+import { Toaster } from 'sonner';
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
+import { DashProvider } from "@/provider/dashContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,14 +25,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `} >
-        <ThemeProvider   attribute="class"  defaultTheme="system" enableSystemdisableTransitionOnChange>
-          <div className="flex flex-col min-h-screen">
-            <div className="flex-1 ">
-              {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystemdisableTransitionOnChange>
+          <DashProvider>
+            <div className="flex flex-col min-h-screen">
+              <div className="flex-1 ">
+                {children}
+              </div>
+              <Navbar className="bottom-10" />
+              <Footer />
             </div>
-            <Navbar className="bottom-10" />
-            <Footer />
-            </div>
+            <Toaster richColors position="top-center" />
+          </DashProvider>
         </ThemeProvider>
       </body>
     </html>
