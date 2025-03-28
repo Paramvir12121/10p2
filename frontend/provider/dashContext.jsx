@@ -11,6 +11,19 @@ export const DashProvider = ({ children }) => {
     const [openTaskList, setOpenTaskList] = useState(false);
     const [openMusic, setOpenMusic] = useState(false);
     
+    // Added visibility controls for work and break timers
+    const [showWorkTimer, setShowWorkTimer] = useState(true);
+    const [showBreakTimer, setShowBreakTimer] = useState(true);
+    
+    // Toggle functions for easier control
+    const toggleWorkTimer = () => setShowWorkTimer(prev => !prev);
+    const toggleBreakTimer = () => setShowBreakTimer(prev => !prev);
+    
+    // Toggle both timers together
+    const toggleBothTimers = (value) => {
+        setShowWorkTimer(value);
+        setShowBreakTimer(value);
+    };
 
     const value = {
         openTimer,
@@ -21,7 +34,14 @@ export const DashProvider = ({ children }) => {
         setOpenTaskList,
         openMusic,
         setOpenMusic,
-
+        // Add new controls
+        showWorkTimer,
+        setShowWorkTimer,
+        showBreakTimer,
+        setShowBreakTimer,
+        toggleWorkTimer,
+        toggleBreakTimer,
+        toggleBothTimers
     };
 
     return <DashContext.Provider value={value}>

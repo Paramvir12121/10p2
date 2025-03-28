@@ -15,8 +15,21 @@ import {
   Settings, 
   Compass,
   Sun,
-  Moon
+  Moon,
+  Check,
+  Timer,
+  Coffee
 } from "lucide-react" // Using lucide-react icons
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const springConfig = {
   duration: 0.3,
@@ -30,7 +43,14 @@ export default function Navbar({ className, ...props }) {
   const tooltipRef = React.useRef(null)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
-  const { setOpenTimer } = useDashContext()
+  const { 
+    setOpenTimer,
+    showWorkTimer,
+    showBreakTimer,
+    toggleWorkTimer,
+    toggleBreakTimer,
+    toggleBothTimers
+  } = useDashContext()
   
   // Only show theme toggle after mounting to avoid hydration mismatch
   React.useEffect(() => {
@@ -42,11 +62,16 @@ export default function Navbar({ className, ...props }) {
   }
 
   // Only after mounting do we use the theme-dependent icon logic
-   const ThemeIcon = !mounted ? Sun : theme === 'dark' ? Sun : Moon
+  const ThemeIcon = !mounted ? Sun : theme === 'dark' ? Sun : Moon
   
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
-    { icon: Clock, label: "Timer", onClick: () => setOpenTimer(prev => !prev) },
+    { 
+      icon: Clock, 
+      label: "Timer", 
+      dropdown: true,
+      onClick: () => setOpenTimer(prev => !prev) 
+    },
     { icon: Target, label: "Goals", onClick: () => console.log("Goals clicked") },
     { icon: Music, label: "Music", onClick: () => console.log("Music clicked") },
     { icon: Image, label: "Background", onClick: () => console.log("Background clicked") },
@@ -123,6 +148,67 @@ export default function Navbar({ className, ...props }) {
           )}
         >
           {navItems.map((item, index) => {
+            if (item.dropdown) {
+              // Dropdown for Timer button
+              return (
+                <DropdownMenu key={index}>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
+                      onMouseEnter={() => setActiveIndex(index)}
+                      onMouseLeave={() => setActiveIndex(null)}
+                    >
+                      <div className="flex justify-center items-center">
+                        <div className="w-5 h-5 flex justify-center items-center">
+                          <item.icon className="w-full h-full" />
+                        </div>
+                      </div>
+                      <span className="sr-only">{item.label}</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" className="w-48">
+                    <DropdownMenuLabel>Timer Controls</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem 
+                      checked={showWorkTimer && showBreakTimer}
+                      onCheckedChange={(checked) => toggleBothTimers(checked)}
+                    >
+                      <span className="flex items-center">
+                        <Timer className="mr-2 h-3.5 w-3.5" />
+                        Show Both Timers
+                      </span>
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem 
+                      checked={showWorkTimer}
+                      onCheckedChange={toggleWorkTimer}
+                    >
+                      <span className="flex items-center">
+                        <Clock className="mr-2 h-3.5 w-3.5" />
+                        Work Timer
+                      </span>
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem 
+                      checked={showBreakTimer}
+                      onCheckedChange={toggleBreakTimer}
+                    >
+                      <span className="flex items-center">
+                        <Coffee className="mr-2 h-3.5 w-3.5" />
+                        Break Timer
+                      </span>
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setOpenTimer(true)}>
+                      <span className="flex items-center">
+                        <Check className="mr-2 h-3.5 w-3.5" />
+                        Open Timers
+                      </span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            }
+
             const NavElement = item.path ? Link : 'button';
             const elementProps = item.path 
               ? { href: item.path } 
@@ -148,5 +234,5 @@ export default function Navbar({ className, ...props }) {
         </div>
       </div>
     </nav>
-  )
+  );
 }
