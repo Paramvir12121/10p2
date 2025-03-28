@@ -1,23 +1,25 @@
 'use client';
 import { useState, useEffect } from "react";
-import DashboardCard from "@/components/layout/DashboardCard";
 import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { Play, Pause, RefreshCcw, Clock, Coffee, ZapOff, Timer, Settings } from "lucide-react";
+import { Play, Pause, RefreshCcw, Clock, Coffee, ZapOff, ChevronDown, ChevronUp } from "lucide-react";
 import { useDashContext } from "@/provider/dashContext";
+import SessionControl, { StandaloneSessionControl } from "./SessionControl";
 
 export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }) {
-  // Work timer states
+  // Work timer states and general states
   const [workTime, setWorkTime] = useState(0);
   const [workRunning, setWorkRunning] = useState(false);
   const [workDisplayTime, setWorkDisplayTime] = useState("00:00");
+  const [workCollapsed, setWorkCollapsed] = useState(false);
   
   // Break timer states
   const [breakTime, setBreakTime] = useState(0);
   const [breakTimerRunning, setBreakTimerRunning] = useState(false);
   const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
+  const [breakCollapsed, setBreakCollapsed] = useState(false);
   
   // Session and progress tracking
   const [sessions, setSessions] = useState([]);
@@ -200,192 +202,220 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
 
   // Get timer visibility from context
   const { showWorkTimer, showBreakTimer } = useDashContext();
+  
+  // Custom card header component
+  const CardHeader = ({ title, icon, collapsed, toggleCollapse }) => (
+    <div 
+      className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-lg cursor-pointer"
+      onClick={toggleCollapse}
+    >
+      <div className="flex items-center gap-2 font-medium">
+        {icon && <span className="text-slate-500">{icon}</span>}
+        {title}
+      </div>
+      <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+        {collapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+        <span className="sr-only">Toggle</span>
+      </Button>
+    </div>
+  );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Work Timer - conditionally rendered based on context */}
-      {showWorkTimer && (
-        <DashboardCard title="Focus Timer" icon={<Clock className="h-4 w-4" />}>
-          <div className="flex flex-col items-center justify-center p-4 relative">
-            <div className="w-36 h-36 mb-4 relative">
-              {workRunning && (
-                <div className={`absolute inset-0 rounded-full bg-primary/5 ${showPulse ? 'scale-110' : 'scale-100'} transition-transform duration-1000 -z-10`}></div>
-              )}
-              <CircularProgressbar 
-                value={workProgress}
-                text={workDisplayTime}
-                strokeWidth={6}
-                styles={buildStyles({
-                  strokeLinecap: 'round',
-                  textSize: '16px',
-                  fontWeight: 'bold',
-                  pathColor: workRunning ? `rgba(99, 102, 241, ${showPulse ? '0.9' : '1'})` : '#6366f1',
-                  textColor: workRunning ? '#6366f1' : '#64748b',
-                  trailColor: '#f1f5f9',
-                  pathTransition: 'stroke-dashoffset 0.5s ease',
-                  backgroundColor: '#3e98c7',
-                })}
+    <div className="flex flex-col gap-4 max-w-md mx-auto">
+      {/* Stack timers vertically instead of in a grid */}
+      <div className="flex flex-col gap-4">
+        {/* Work Timer - always on top when visible */}
+        {showWorkTimer && (
+          <div className="flex flex-col gap-2">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
+              <CardHeader 
+                title="Focus Timer" 
+                icon={<Clock className="h-4 w-4" />} 
+                collapsed={workCollapsed}
+                toggleCollapse={() => setWorkCollapsed(!workCollapsed)}
               />
-              {workRunning && (
-                <div className="absolute top-3 left-3 right-3 bottom-3 rounded-full border-4 border-primary/20 -z-10"></div>
-              )}
-            </div>
-            
-            <div className="flex justify-center gap-2 mb-3">
-              {workRunning ? (
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  className="flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
-                  onClick={handleWorkStop}
-                >
-                  <Pause className="h-4 w-4" /> Pause
-                </Button>
-              ) : (
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
-                  onClick={handleWorkStart}
-                >
-                  <Play className="h-4 w-4" /> Start Focus
-                </Button>
-              )}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex items-center gap-1 border-slate-300" 
-                onClick={handleWorkReset}
-              >
-                <RefreshCcw className="h-4 w-4" /> Reset
-              </Button>
-            </div>
-            
-            <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-md w-full text-center">
-              <div className="font-medium mb-1">Target: 25 minutes</div>
-              <div className="flex justify-between items-center">
-                <span>Session time:</span>
-                <span className="font-mono">{Math.floor(workTime / 60)}m {workTime % 60}s</span>
-              </div>
-              <div className="flex justify-between items-center font-medium text-indigo-600 dark:text-indigo-400">
-                <span>Break time earned:</span>
-                <span className="font-mono">{Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s</span>
-              </div>
-            </div>
-          </div>
-        </DashboardCard>
-      )}
-      
-      {/* Break Timer - conditionally rendered based on context */}
-      {showBreakTimer && (
-        <DashboardCard title="Break Timer" icon={<Coffee className="h-4 w-4" />}>
-          <div className="flex flex-col items-center justify-center p-4 relative">
-            <div className="w-36 h-36 mb-4 relative">
-              {breakTimerRunning && (
-                <div className={`absolute inset-0 rounded-full bg-green-500/5 ${showPulse ? 'scale-110' : 'scale-100'} transition-transform duration-1000 -z-10`}></div>
-              )}
-              <CircularProgressbar 
-                value={breakProgress}
-                text={breakTime > 0 ? breakDisplayTime : "00:00"}
-                strokeWidth={6}
-                counterClockwise
-                styles={buildStyles({
-                  strokeLinecap: 'round',
-                  textSize: '16px',
-                  fontWeight: 'bold',
-                  pathColor: breakTimerRunning ? `rgba(34, 197, 94, ${showPulse ? '0.9' : '1'})` : '#22c55e',
-                  textColor: breakTimerRunning ? '#22c55e' : '#64748b',
-                  trailColor: '#f1f5f9',
-                  pathTransition: 'stroke-dashoffset 0.5s ease',
-                })}
-              />
-              {breakTimerRunning && (
-                <div className="absolute top-3 left-3 right-3 bottom-3 rounded-full border-4 border-green-500/20 -z-10"></div>
-              )}
-            </div>
-            
-            <div className="flex justify-center gap-2 mb-3">
-              {breakTimerRunning ? (
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  className="flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
-                  onClick={handleBreakStop}
-                >
-                  <Pause className="h-4 w-4" /> Pause
-                </Button>
-              ) : (
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  className={`bg-green-600 hover:bg-green-700 text-white flex items-center gap-1 shadow-md hover:shadow-lg transition-all ${earnedBreakTime <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  onClick={handleBreakStart}
-                  disabled={earnedBreakTime <= 0}
-                >
-                  <Coffee className="h-4 w-4" /> Take Break
-                </Button>
-              )}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex items-center gap-1 border-slate-300" 
-                onClick={handleBreakEnd}
-              >
-                <ZapOff className="h-4 w-4" /> Skip
-              </Button>
-            </div>
-            
-            <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-md w-full">
-              <div className="font-medium text-center mb-1">Your Break Stats</div>
-              <div className="flex justify-between items-center">
-                <span>Available break time:</span>
-                <span className="font-mono">{Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s</span>
-              </div>
-              {breakTimerRunning ? (
-                <div className="flex justify-between items-center font-medium text-green-600 dark:text-green-400">
-                  <span>Time remaining:</span>
-                  <span className="font-mono">{Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
-                </div>
-              ) : (
-                <div className="text-center mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-                  {earnedBreakTime <= 0 ? "Focus first to earn break time" : "Ready for a break?"}
+              
+              {!workCollapsed && (
+                <div className="flex flex-col items-center justify-center p-3 relative">
+                  <div className="w-32 h-32 mb-3 relative">
+                    {workRunning && (
+                      <div className={`absolute inset-0 rounded-full bg-primary/5 ${showPulse ? 'scale-110' : 'scale-100'} transition-transform duration-1000 -z-10`}></div>
+                    )}
+                    <CircularProgressbar 
+                      value={workProgress}
+                      text={workDisplayTime}
+                      strokeWidth={6}
+                      styles={buildStyles({
+                        strokeLinecap: 'round',
+                        textSize: '14px',
+                        fontWeight: 'bold',
+                        pathColor: workRunning ? `rgba(99, 102, 241, ${showPulse ? '0.9' : '1'})` : '#6366f1',
+                        textColor: workRunning ? '#6366f1' : '#64748b',
+                        trailColor: '#f1f5f9',
+                        pathTransition: 'stroke-dashoffset 0.5s ease',
+                        backgroundColor: '#3e98c7',
+                      })}
+                    />
+                    {workRunning && (
+                      <div className="absolute top-3 left-3 right-3 bottom-3 rounded-full border-4 border-primary/20 -z-10"></div>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-center gap-2 mb-2">
+                    {workRunning ? (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        className="flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
+                        onClick={handleWorkStop}
+                      >
+                        <Pause className="h-4 w-4" /> Pause
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
+                        onClick={handleWorkStart}
+                      >
+                        <Play className="h-4 w-4" /> Start Focus
+                      </Button>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-1 border-slate-300" 
+                      onClick={handleWorkReset}
+                    >
+                      <RefreshCcw className="h-4 w-4" /> Reset
+                    </Button>
+                  </div>
+                  
+                  <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-md w-full text-center">
+                    <div className="font-medium mb-1">Target: 25 minutes</div>
+                    <div className="flex justify-between items-center">
+                      <span>Session time:</span>
+                      <span className="font-mono">{Math.floor(workTime / 60)}m {workTime % 60}s</span>
+                    </div>
+                    <div className="flex justify-between items-center font-medium text-indigo-600 dark:text-indigo-400">
+                      <span>Break time earned:</span>
+                      <span className="font-mono">{Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </div>
-        </DashboardCard>
-      )}
-      
-      {/* Session Controls - always visible */}
-      <div className="col-span-1 md:col-span-2 flex flex-col md:flex-row justify-center items-center gap-3 mt-1 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-        <div className="flex-grow text-center md:text-left">
-          <h3 className="text-xs font-medium flex items-center justify-center md:justify-start gap-1">
-            <Timer className="h-3 w-3" /> Current Session
-          </h3>
-          <p className="text-xs text-slate-500">
-            {workRunning ? "Focus time in progress" : breakTimerRunning ? "Break time in progress" : "Session ready"}
-          </p>
-        </div>
+        )}
         
-        <div className="flex gap-2">
-          <Button 
-            variant="secondary" 
-            onClick={handleSessionEnd} 
-            className="flex items-center gap-1"
-            size="xs"
-          >
-            End Session
-          </Button>
-          <Button 
-            variant="outline" 
-            size="xs"
-            className="flex items-center gap-1 border-slate-300"
-            onClick={() => toast.info("Settings", { description: "Timer settings coming soon!" })}
-          >
-            <Settings className="h-3 w-3" /> Settings
-          </Button>
-        </div>
+        {/* Break Timer - always below work timer when visible */}
+        {showBreakTimer && (
+          <div className="flex flex-col gap-2">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
+              <CardHeader 
+                title="Break Timer" 
+                icon={<Coffee className="h-4 w-4" />} 
+                collapsed={breakCollapsed}
+                toggleCollapse={() => setBreakCollapsed(!breakCollapsed)}
+              />
+              
+              {!breakCollapsed && (
+                <div className="flex flex-col items-center justify-center p-3 relative">
+                  <div className="w-32 h-32 mb-3 relative">
+                    {breakTimerRunning && (
+                      <div className={`absolute inset-0 rounded-full bg-green-500/5 ${showPulse ? 'scale-110' : 'scale-100'} transition-transform duration-1000 -z-10`}></div>
+                    )}
+                    <CircularProgressbar 
+                      value={breakProgress}
+                      text={breakTime > 0 ? breakDisplayTime : "00:00"}
+                      strokeWidth={6}
+                      counterClockwise
+                      styles={buildStyles({
+                        strokeLinecap: 'round',
+                        textSize: '14px',
+                        fontWeight: 'bold',
+                        pathColor: breakTimerRunning ? `rgba(34, 197, 94, ${showPulse ? '0.9' : '1'})` : '#22c55e',
+                        textColor: breakTimerRunning ? '#22c55e' : '#64748b',
+                        trailColor: '#f1f5f9',
+                        pathTransition: 'stroke-dashoffset 0.5s ease',
+                      })}
+                    />
+                    {breakTimerRunning && (
+                      <div className="absolute top-3 left-3 right-3 bottom-3 rounded-full border-4 border-green-500/20 -z-10"></div>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-center gap-2 mb-2">
+                    {breakTimerRunning ? (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        className="flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
+                        onClick={handleBreakStop}
+                      >
+                        <Pause className="h-4 w-4" /> Pause
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className={`bg-green-600 hover:bg-green-700 text-white flex items-center gap-1 shadow-md hover:shadow-lg transition-all ${earnedBreakTime <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        onClick={handleBreakStart}
+                        disabled={earnedBreakTime <= 0}
+                      >
+                        <Coffee className="h-4 w-4" /> Take Break
+                      </Button>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-1 border-slate-300" 
+                      onClick={handleBreakEnd}
+                    >
+                      <ZapOff className="h-4 w-4" /> Skip
+                    </Button>
+                  </div>
+                  
+                  <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-md w-full">
+                    <div className="font-medium text-center mb-1">Your Break Stats</div>
+                    <div className="flex justify-between items-center">
+                      <span>Available break time:</span>
+                      <span className="font-mono">{Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s</span>
+                    </div>
+                    {breakTimerRunning ? (
+                      <div className="flex justify-between items-center font-medium text-green-600 dark:text-green-400">
+                        <span>Time remaining:</span>
+                        <span className="font-mono">{Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
+                      </div>
+                    ) : (
+                      <div className="text-center mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+                        {earnedBreakTime <= 0 ? "Focus first to earn break time" : "Ready for a break?"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+      
+      {/* Session Controls - Always at the bottom and full width */}
+      {(showWorkTimer || showBreakTimer) ? (
+        <SessionControl
+          workRunning={workRunning}
+          breakTimerRunning={breakTimerRunning}
+          workTime={workTime}
+          earnedBreakTime={earnedBreakTime}
+          onSessionEnd={handleSessionEnd}
+        />
+      ) : (
+        <StandaloneSessionControl
+          workTime={workTime}
+          earnedBreakTime={earnedBreakTime}
+          onSessionEnd={handleSessionEnd}
+        />
+      )}
     </div>
   );
 }
