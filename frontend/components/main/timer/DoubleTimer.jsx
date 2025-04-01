@@ -220,201 +220,171 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   // Custom card header component
   const CardHeader = ({ title, icon, collapsed, toggleCollapse }) => (
     <div 
-      className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-lg cursor-pointer"
+      className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-lg cursor-pointer"
       onClick={toggleCollapse}
     >
-      <div className="flex items-center gap-2 font-medium">
+      <div className="flex items-center gap-1 text-sm">
         {icon && <span className="text-slate-500">{icon}</span>}
         {title}
       </div>
-      <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-        {collapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+      <Button variant="ghost" size="sm" className="w-6 h-6 p-0">
+        {collapsed ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
         <span className="sr-only">Toggle</span>
       </Button>
     </div>
   );
 
   return (
-    <div className="flex flex-col gap-4 max-w-md mx-auto">
-      {/* Stack timers vertically instead of in a grid */}
-      <div className="flex flex-col gap-4">
-        {/* Work Timer - always on top when visible */}
+    <div className="flex flex-col gap-2 max-w-sm mx-auto">
+      <div className="flex flex-col gap-2">
+        {/* Work Timer - simplified */}
         {showWorkTimer && (
-          <div className="flex flex-col gap-2">
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
-              <CardHeader 
-                title="Focus Timer" 
-                icon={<Clock className="h-4 w-4" />} 
-                collapsed={workCollapsed}
-                toggleCollapse={() => setWorkCollapsed(!workCollapsed)}
-              />
-              
-              {!workCollapsed && (
-                <div className="flex flex-col items-center justify-center p-3 relative">
-                  <div className="w-32 h-32 mb-3 relative">
-                    {workRunning && (
-                      <div className={`absolute inset-0 rounded-full bg-primary/5 ${showPulse ? 'scale-110' : 'scale-100'} transition-transform duration-1000 -z-10`}></div>
-                    )}
-                    <CircularProgressbar 
-                      value={workProgress}
-                      text={workDisplayTime}
-                      strokeWidth={6}
-                      styles={buildStyles({
-                        strokeLinecap: 'round',
-                        textSize: '14px',
-                        fontWeight: 'bold',
-                        pathColor: workRunning ? `rgba(99, 102, 241, ${showPulse ? '0.9' : '1'})` : '#6366f1',
-                        textColor: workRunning ? '#6366f1' : '#64748b',
-                        trailColor: '#f1f5f9',
-                        pathTransition: 'stroke-dashoffset 0.5s ease',
-                        backgroundColor: '#3e98c7',
-                      })}
-                    />
-                    {workRunning && (
-                      <div className="absolute top-3 left-3 right-3 bottom-3 rounded-full border-4 border-primary/20 -z-10"></div>
-                    )}
-                  </div>
-                  
-                  <div className="flex justify-center gap-2 mb-2">
-                    {workRunning ? (
-                      <Button 
-                        variant="destructive" 
-                        size="sm" 
-                        className="flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
-                        onClick={handleWorkStop}
-                      >
-                        <Pause className="h-4 w-4" /> Pause
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="default" 
-                        size="sm" 
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
-                        onClick={handleWorkStart}
-                      >
-                        <Play className="h-4 w-4" /> Start Focus
-                      </Button>
-                    )}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex items-center gap-1 border-slate-300" 
-                      onClick={handleWorkReset}
-                    >
-                      <RefreshCcw className="h-4 w-4" /> Reset
-                    </Button>
-                  </div>
-                  
-                  <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-md w-full text-center">
-                    <div className="font-medium mb-1">Target: 25 minutes</div>
-                    <div className="flex justify-between items-center">
-                      <span>Session time:</span>
-                      <span className="font-mono">{Math.floor(workTime / 60)}m {workTime % 60}s</span>
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
+            <CardHeader 
+              title="Focus Timer" 
+              icon={<Clock className="h-3 w-3" />} 
+              collapsed={workCollapsed}
+              toggleCollapse={() => setWorkCollapsed(!workCollapsed)}
+            />
+            
+            {!workCollapsed && (
+              <div className="flex items-center p-2 relative">
+                <div className="w-20 h-20">
+                  <CircularProgressbar 
+                    value={workProgress}
+                    text={workDisplayTime}
+                    strokeWidth={4}
+                    styles={buildStyles({
+                      strokeLinecap: 'round',
+                      textSize: '12px',
+                      fontWeight: 'bold',
+                      pathColor: workRunning ? `rgba(99, 102, 241, 1)` : '#6366f1',
+                      textColor: workRunning ? '#6366f1' : '#64748b',
+                      trailColor: '#f1f5f9',
+                    })}
+                  />
+                </div>
+                
+                <div className="ml-3 flex-1">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span>Session: {Math.floor(workTime / 60)}m {workTime % 60}s</span>
+                      <span className="text-indigo-600 dark:text-indigo-400">Break: {Math.floor(earnedBreakTime / 60)}m</span>
                     </div>
-                    <div className="flex justify-between items-center font-medium text-indigo-600 dark:text-indigo-400">
-                      <span>Break time earned:</span>
-                      <span className="font-mono">{Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s</span>
+                    
+                    <div className="flex gap-1">
+                      {workRunning ? (
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          className="h-7 text-xs px-2 flex-1"
+                          onClick={handleWorkStop}
+                        >
+                          <Pause className="h-3 w-3 mr-1" /> Pause
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="default" 
+                          size="sm" 
+                          className="bg-indigo-600 h-7 text-xs px-2 flex-1"
+                          onClick={handleWorkStart}
+                        >
+                          <Play className="h-3 w-3 mr-1" /> Start
+                        </Button>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 px-2"
+                        onClick={handleWorkReset}
+                      >
+                        <RefreshCcw className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
         
-        {/* Break Timer - always below work timer when visible */}
+        {/* Break Timer - simplified */}
         {showBreakTimer && (
-          <div className="flex flex-col gap-2">
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
-              <CardHeader 
-                title="Break Timer" 
-                icon={<Coffee className="h-4 w-4" />} 
-                collapsed={breakCollapsed}
-                toggleCollapse={() => setBreakCollapsed(!breakCollapsed)}
-              />
-              
-              {!breakCollapsed && (
-                <div className="flex flex-col items-center justify-center p-3 relative">
-                  <div className="w-32 h-32 mb-3 relative">
-                    {breakTimerRunning && (
-                      <div className={`absolute inset-0 rounded-full bg-green-500/5 ${showPulse ? 'scale-110' : 'scale-100'} transition-transform duration-1000 -z-10`}></div>
-                    )}
-                    <CircularProgressbar 
-                      value={breakProgress}
-                      text={breakTime > 0 ? breakDisplayTime : "00:00"}
-                      strokeWidth={6}
-                      counterClockwise
-                      styles={buildStyles({
-                        strokeLinecap: 'round',
-                        textSize: '14px',
-                        fontWeight: 'bold',
-                        pathColor: breakTimerRunning ? `rgba(34, 197, 94, ${showPulse ? '0.9' : '1'})` : '#22c55e',
-                        textColor: breakTimerRunning ? '#22c55e' : '#64748b',
-                        trailColor: '#f1f5f9',
-                        pathTransition: 'stroke-dashoffset 0.5s ease',
-                      })}
-                    />
-                    {breakTimerRunning && (
-                      <div className="absolute top-3 left-3 right-3 bottom-3 rounded-full border-4 border-green-500/20 -z-10"></div>
-                    )}
-                  </div>
-                  
-                  <div className="flex justify-center gap-2 mb-2">
-                    {breakTimerRunning ? (
-                      <Button 
-                        variant="destructive" 
-                        size="sm" 
-                        className="flex items-center gap-1 shadow-md hover:shadow-lg transition-all" 
-                        onClick={handleBreakStop}
-                      >
-                        <Pause className="h-4 w-4" /> Pause
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="default" 
-                        size="sm" 
-                        className={`bg-green-600 hover:bg-green-700 text-white flex items-center gap-1 shadow-md hover:shadow-lg transition-all ${earnedBreakTime <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        onClick={handleBreakStart}
-                        disabled={earnedBreakTime <= 0}
-                      >
-                        <Coffee className="h-4 w-4" /> Take Break
-                      </Button>
-                    )}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex items-center gap-1 border-slate-300" 
-                      onClick={handleBreakEnd}
-                    >
-                      <ZapOff className="h-4 w-4" /> Skip
-                    </Button>
-                  </div>
-                  
-                  <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-md w-full">
-                    <div className="font-medium text-center mb-1">Your Break Stats</div>
-                    <div className="flex justify-between items-center">
-                      <span>Available break time:</span>
-                      <span className="font-mono">{Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s</span>
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
+            <CardHeader 
+              title="Break Timer" 
+              icon={<Coffee className="h-3 w-3" />} 
+              collapsed={breakCollapsed}
+              toggleCollapse={() => setBreakCollapsed(!breakCollapsed)}
+            />
+            
+            {!breakCollapsed && (
+              <div className="flex items-center p-2 relative">
+                <div className="w-20 h-20">
+                  <CircularProgressbar 
+                    value={breakProgress}
+                    text={breakTime > 0 ? breakDisplayTime : "00:00"}
+                    strokeWidth={4}
+                    counterClockwise
+                    styles={buildStyles({
+                      strokeLinecap: 'round',
+                      textSize: '12px',
+                      fontWeight: 'bold',
+                      pathColor: breakTimerRunning ? `rgba(34, 197, 94, 1)` : '#22c55e',
+                      textColor: breakTimerRunning ? '#22c55e' : '#64748b',
+                      trailColor: '#f1f5f9',
+                    })}
+                  />
+                </div>
+                
+                <div className="ml-3 flex-1">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span>Available: {Math.floor(earnedBreakTime / 60)}m</span>
+                      {breakTimerRunning && (
+                        <span className="text-green-600 dark:text-green-400">Left: {Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
+                      )}
                     </div>
-                    {breakTimerRunning ? (
-                      <div className="flex justify-between items-center font-medium text-green-600 dark:text-green-400">
-                        <span>Time remaining:</span>
-                        <span className="font-mono">{Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
-                      </div>
-                    ) : (
-                      <div className="text-center mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-                        {earnedBreakTime <= 0 ? "Focus first to earn break time" : "Ready for a break?"}
-                      </div>
-                    )}
+                    
+                    <div className="flex gap-1">
+                      {breakTimerRunning ? (
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          className="h-7 text-xs px-2 flex-1" 
+                          onClick={handleBreakStop}
+                        >
+                          <Pause className="h-3 w-3 mr-1" /> Pause
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="default" 
+                          size="sm" 
+                          className="bg-green-600 h-7 text-xs px-2 flex-1"
+                          onClick={handleBreakStart}
+                          disabled={earnedBreakTime <= 0}
+                        >
+                          <Coffee className="h-3 w-3 mr-1" /> Break
+                        </Button>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 px-2"
+                        onClick={handleBreakEnd}
+                      >
+                        <ZapOff className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
       
-      {/* Session Controls - Always at the bottom and full width */}
+      {/* Session Controls - simplified */}
       {(showWorkTimer || showBreakTimer) ? (
         <SessionControl
           workRunning={workRunning}

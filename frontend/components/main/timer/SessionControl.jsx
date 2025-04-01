@@ -11,37 +11,33 @@ const SessionControl = ({
   onSessionEnd 
 }) => {
   return (
-    <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2 mt-1 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+    <div className="w-full flex flex-col md:flex-row justify-between items-center gap-1 mt-1 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-1.5 rounded-md border border-slate-200 dark:border-slate-700">
       <div className="flex-grow text-center md:text-left">
-        <h3 className="text-xs font-medium flex items-center justify-center md:justify-start gap-1">
-          <Timer className="h-3 w-3" /> Current Session
+        <h3 className="text-[9px] font-medium flex items-center justify-center md:justify-start gap-1">
+          <Timer className="h-2.5 w-2.5" /> Current Session
         </h3>
-        <p className="text-xs text-slate-500 mb-2">
-          {workRunning ? "Focus time in progress" : breakTimerRunning ? "Break time in progress" : "Session ready"}
-        </p>
         
-        {/* Always show session stats, even when a timer is running */}
-        <div className="text-xs text-slate-500 mt-1">
-          <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+        <div className="text-[9px] text-slate-500">
+          <div className="flex flex-wrap gap-1 justify-center md:justify-start">
             {workTime > 0 && (
-              <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-                Work: {Math.floor(workTime / 60)}m {workTime % 60}s
+              <span className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-[8px]">
+                {Math.floor(workTime / 60)}m {workTime % 60}s
               </span>
             )}
             {earnedBreakTime > 0 && (
-              <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-                Break earned: {Math.floor(earnedBreakTime / 60)}m {earnedBreakTime % 60}s
+              <span className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-[8px]">
+                Break: {Math.floor(earnedBreakTime / 60)}m
               </span>
             )}
           </div>
         </div>
       </div>
       
-      <div className="flex gap-2 mt-2 md:mt-0">
+      <div className="flex gap-1 mt-1 md:mt-0">
         <Button 
           variant="secondary" 
           onClick={onSessionEnd} 
-          className="flex items-center gap-1"
+          className="flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 h-6"
           size="sm"
         >
           End Session
@@ -49,10 +45,10 @@ const SessionControl = ({
         <Button 
           variant="outline" 
           size="sm"
-          className="flex items-center gap-1 border-slate-300"
+          className="flex items-center gap-0.5 border-slate-300 text-[9px] px-1.5 py-0.5 h-6"
           onClick={() => toast.info("Settings", { description: "Timer settings coming soon!" })}
         >
-          <Settings className="h-3 w-3" /> Settings
+          <Settings className="h-2.5 w-2.5" />
         </Button>
       </div>
     </div>

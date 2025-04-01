@@ -15,7 +15,7 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-row items-start justify-between">
         <div className="space-y-6">
-          <h1 className="text-3xl font-bold mb-8">Focus Dashboard</h1>
+          {/* <h1 className="text-3xl font-bold mb-8">Focus Dashboard</h1> */}
           <AllTasks initialTasks={initialTasks} />
         </div>
         <div className="flex justify-end">

@@ -45,30 +45,30 @@ const Tasks = ({
     return (
         <div className="w-full max-w-md">
             <Card className="p-4 shadow-sm mb-4">
-                <div className="flex items-center gap-2 mb-3">
-                    <ListTodo className="h-5 w-5 text-primary" />
-                    <h2 className="text-lg font-semibold">Task List</h2>
+                <div className="flex items-center gap-1 mb-2">
+                    <ListTodo className="h-4 w-4 text-primary" />
+                    <h2 className="text-sm font-semibold">Task List</h2>
                 </div>
                 
                 {/* Task input form */}
-                <div className="flex mb-4">
+                <div className="flex mb-2">
                     <Input
                         type="text"
                         placeholder="Add a new task"
                         value={newTask}
                         onChange={(e) => setNewTask(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        className="flex-grow mr-2"
+                        className="flex-grow mr-1 text-sm"
                     />
-                    <Button onClick={handleAddTask}>Add</Button>
+                    <Button className="text-sm px-2 py-1" onClick={handleAddTask}>Add</Button>
                 </div>
                 
                 {/* Task filtering tabs */}
                 <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-                    <TabsList className="w-full mb-4">
-                        <TabsTrigger value="all" className="flex-1">All</TabsTrigger>
-                        <TabsTrigger value="active" className="flex-1">Active</TabsTrigger>
-                        <TabsTrigger value="completed" className="flex-1">Completed</TabsTrigger>
+                    <TabsList className="w-full mb-2">
+                        <TabsTrigger value="all" className="flex-1 text-xs">All</TabsTrigger>
+                        <TabsTrigger value="active" className="flex-1 text-xs">Active</TabsTrigger>
+                        <TabsTrigger value="completed" className="flex-1 text-xs">Completed</TabsTrigger>
                     </TabsList>
                     
                     {/* Task sortable context - DndContext moved to parent */}

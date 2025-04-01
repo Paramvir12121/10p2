@@ -85,7 +85,7 @@ export function SortableTask({
 
   // Generate dynamic class names based on task state
   const taskClassNames = [
-    'flex items-center gap-2 p-2 rounded-lg border',
+    'flex items-center gap-1 p-1 rounded-md border text-xs',
     isDragging ? 'border-primary/60 bg-primary/5' : 'border-border',
     completed ? 'bg-muted/50' : 'bg-background',
     isMainTask && !completed ? 'border-primary/50 bg-primary/5' : '',
@@ -109,18 +109,18 @@ export function SortableTask({
     >
       <button
         onClick={handleToggle}
-        className={`flex-none w-5 h-5 text-primary ${!completed ? 'hover:text-primary/80' : 'hover:text-primary/60'} transition-colors`}
+        className={`flex-none w-4 h-4 text-primary ${!completed ? 'hover:text-primary/80' : 'hover:text-primary/60'} transition-colors`}
         aria-label={completed ? "Mark as incomplete" : "Mark as complete"}
       >
         {completed ? (
-          <CheckCircle className="h-5 w-5 transition-transform duration-200 ease-spring" />
+          <CheckCircle className="h-4 w-4 transition-transform duration-200 ease-spring" />
         ) : (
-          <Circle className={`h-5 w-5 ${isCompleting ? 'scale-90' : ''} transition-transform duration-200`} />
+          <Circle className={`h-4 w-4 ${isCompleting ? 'scale-90' : ''} transition-transform duration-200`} />
         )}
       </button>
       
       <span 
-        className={`flex-grow text-sm ${completed ? 'line-through text-muted-foreground' : ''} transition-all duration-300`}
+        className={`flex-grow text-xs ${completed ? 'line-through text-muted-foreground' : ''} transition-all duration-300`}
       >
         {text}
       </span>
@@ -132,26 +132,26 @@ export function SortableTask({
       {!isDragOverlay && !completed && ( // Only show drag handle if not completed
         <div 
           {...listeners}
-          className="flex-none w-5 h-5 text-muted-foreground cursor-grab active:cursor-grabbing hover:text-primary transition-colors"
+          className="flex-none w-4 h-4 text-muted-foreground cursor-grab active:cursor-grabbing hover:text-primary transition-colors"
           title="Drag to reorder or set as focus"
         >
-          <GripVertical className="h-5 w-5" />
+          <GripVertical className="h-4 w-4" />
         </div>
       )}
       
       {!isDragOverlay && completed && ( // Show non-interactive drag handle for completed tasks
         <div 
-          className="flex-none w-5 h-5 text-muted-foreground/40 cursor-not-allowed transition-colors"
+          className="flex-none w-4 h-4 text-muted-foreground/40 cursor-not-allowed transition-colors"
           title="Completed tasks can't be set as focus"
         >
-          <GripVertical className="h-5 w-5" />
+          <GripVertical className="h-4 w-4" />
         </div>
       )}
       
       {!isDragOverlay && ( // Don't show buttons on the overlay
         <button
           onClick={onDelete}
-          className="flex-none w-5 h-5 text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100"
+          className="flex-none w-4 h-4 text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100"
           aria-label="Delete task"
         >
           <Trash2 className="h-4 w-4" />
