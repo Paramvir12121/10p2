@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { GripVertical } from 'lucide-react';
 
 export default function DraggableWrapper({
   id,
@@ -10,8 +9,8 @@ export default function DraggableWrapper({
   defaultPosition = { x: 20, y: 20 },
   bounds = "parent",
   className,
-  handle = true,
-  showReset = true,
+  handleSelector = ".card-header", // CSS selector for the handle element
+  showReset = false,
   zIndex = 10
 }) {
   const elementRef = useRef(null);
@@ -47,8 +46,8 @@ export default function DraggableWrapper({
   }, [position, id, isDragging]);
 
   const handleMouseDown = (e) => {
-    // Only allow dragging from the handle if it's enabled
-    if (handle && !e.target.closest('.drag-handle')) return;
+    // Only allow dragging from the handle if it exists
+    if (handleSelector && !e.target.closest(handleSelector)) return;
 
     setIsDragging(true);
     
@@ -90,8 +89,8 @@ export default function DraggableWrapper({
 
   // Handle touch events
   const handleTouchStart = (e) => {
-    // Only allow dragging from the handle if it's enabled
-    if (handle && !e.target.closest('.drag-handle')) return;
+    // Only allow dragging from the handle if it exists
+    if (handleSelector && !e.target.closest(handleSelector)) return;
     
     const touch = e.touches[0];
     setIsDragging(true);
@@ -147,19 +146,12 @@ export default function DraggableWrapper({
     };
   }, [isDragging, offset]);
 
-  const resetPosition = () => {
-    setPosition(defaultPosition);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(`draggable-${id}`);
-    }
-  };
-
   return (
     <div 
       ref={elementRef}
       className={cn(
         "absolute",
-        isDragging ? "cursor-grabbing" : "cursor-grab",
+        isDragging && "cursor-grabbing",
         "transition-shadow shadow-md",
         isDragging && "shadow-lg",
         className
@@ -172,22 +164,7 @@ export default function DraggableWrapper({
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
     >
-      {handle && (
-        <div className="drag-handle flex items-center justify-between p-2 bg-card/80 backdrop-blur-sm rounded-t-md border-b border-border hover:bg-muted/50 cursor-grab">
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
-          {showReset && (
-            <button 
-              onClick={resetPosition} 
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              Reset
-            </button>
-          )}
-        </div>
-      )}
-      <div className={isDragging ? "cursor-grabbing pointer-events-none" : ""}>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

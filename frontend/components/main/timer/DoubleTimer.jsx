@@ -220,7 +220,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   // Custom card header component
   const CardHeader = ({ title, icon, collapsed, toggleCollapse }) => (
     <div 
-      className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-md cursor-pointer"
+      className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-md cursor-grab card-header"
       onClick={toggleCollapse}
     >
       <div className="flex items-center gap-1 text-[11px] font-medium">

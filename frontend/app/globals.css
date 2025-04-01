@@ -208,6 +208,16 @@
   .draggable-handle:active {
     @apply cursor-grabbing;
   }
+
+  /* Add draggable cursor to card headers */
+  .card-header {
+    @apply cursor-grab;
+  }
+  
+  /* Change cursor when actively dragging */
+  .card-header:active {
+    @apply cursor-grabbing;
+  }
 }
 
 @layer base {
