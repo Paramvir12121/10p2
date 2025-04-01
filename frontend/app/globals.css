@@ -112,6 +112,79 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Custom animation keyframes */
+@keyframes task-pop {
+  0% { transform: scale(0.96); opacity: 0.7; }
+  50% { transform: scale(1.03); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes task-complete {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.05); }
+  100% { transform: scale(0.97) translateY(4px); opacity: 0.85; }
+}
+
+/* Improved task focus enter animation */
+@keyframes task-focus-enter {
+  0% { 
+    transform: translateY(15px) scale(0.97); 
+    opacity: 0.6; 
+  }
+  100% { 
+    transform: translateY(0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+/* Improved focus receive animation */
+@keyframes focus-receive {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.01); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+  70% { transform: scale(0.995); }
+  100% { transform: scale(1); }
+}
+
+/* New animation for task flying in */
+@keyframes task-fly {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+  60% { opacity: 0.9; }
+  100% { transform: translate(var(--fly-x), var(--fly-y)) scale(var(--fly-scale)) rotate(var(--fly-rotate)); opacity: 0.7; }
+}
+
+@keyframes focus-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+@layer components {
+  .task-enter {
+    animation: task-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .task-complete {
+    animation: task-complete 0.5s forwards;
+  }
+  
+  .task-focus-enter {
+    animation: task-focus-enter 0.3s cubic-bezier(0.2, 0.85, 0.4, 1);
+  }
+  
+  /* New classes for enhanced animations */
+  .focus-receive {
+    animation: focus-receive 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .task-fly {
+    animation: task-fly 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  
+  .focus-pulse {
+    animation: focus-pulse 1.5s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

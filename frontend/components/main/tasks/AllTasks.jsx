@@ -16,6 +16,7 @@ import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useDashContext } from '@/provider/dashContext';
 import { SortableTask } from './SortableTask';
 import { createPortal } from 'react-dom';
+import { toast } from "sonner";
 
 // Custom drop animation configuration for smoother transitions
 const dropAnimation = {
@@ -94,7 +95,7 @@ const AllTasks = ({ initialTasks = [] }) => {
     setActiveTask(draggedTask);
   };
   
-  // Handle drag end events with animation
+  // Handle drag end events with improved animation
   const handleDragEnd = (event) => {
     const { active, over } = event;
     
@@ -106,6 +107,17 @@ const AllTasks = ({ initialTasks = [] }) => {
     
     // If dragging to focus area
     if (over.id === 'focus-area') {
+      // Check if the task is completed
+      const draggedTask = tasks.find(task => task.id === active.id);
+      if (draggedTask && draggedTask.completed) {
+        // Show a toast notification that completed tasks can't be focus
+        toast.info("Can't set as focus", {
+          description: "Completed tasks cannot be set as your current focus.",
+          duration: 3000,
+        });
+        return;
+      }
+      
       // Set the animation state
       setAnimatingTaskId(active.id);
       
@@ -117,10 +129,19 @@ const AllTasks = ({ initialTasks = [] }) => {
         const taskRect = taskElement.getBoundingClientRect();
         const focusRect = focusAreaElement.getBoundingClientRect();
         
+        // Find the target position inside the focus area (not at the heading)
+        const targetY = focusRect.top + focusRect.height * 0.5; // Position halfway down
+        const targetX = focusRect.left + focusRect.width * 0.5; // Position at center
+        
         setAnimationDetails({
           id: active.id,
           fromRect: taskRect,
-          toRect: focusRect,
+          toRect: {
+            top: targetY - (taskRect.height / 2),
+            left: targetX - (taskRect.width / 2),
+            width: taskRect.width,
+            height: taskRect.height
+          },
           task: tasks.find(task => task.id === active.id)
         });
         
@@ -129,7 +150,7 @@ const AllTasks = ({ initialTasks = [] }) => {
           setTaskAsFocus(active.id);
           setAnimatingTaskId(null);
           setAnimationDetails(null);
-        }, 300);
+        }, 280); // Slightly shorter for snappier feel
       } else {
         // Fallback if elements not found
         setTaskAsFocus(active.id);
@@ -200,7 +221,7 @@ const AllTasks = ({ initialTasks = [] }) => {
       {/* Flying task animation */}
       {animationDetails && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed pointer-events-none z-50 transition-all duration-300 ease-out"
+          className="fixed pointer-events-none z-50 transition-all duration-280 ease-out"
           style={{
             top: animationDetails.fromRect.top,
             left: animationDetails.fromRect.left,
@@ -209,8 +230,8 @@ const AllTasks = ({ initialTasks = [] }) => {
             transform: `translate(
               ${animationDetails.toRect.left - animationDetails.fromRect.left}px,
               ${animationDetails.toRect.top - animationDetails.fromRect.top}px
-            ) scale(${animationDetails.toRect.width / animationDetails.fromRect.width})`,
-            opacity: 0.8,
+            )`,
+            opacity: 0.9,
           }}
         >
           <SortableTask
