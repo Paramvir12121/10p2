@@ -1,20 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Focus App
+
+A productivity application with pomodoro timer, task management, and customizable backgrounds.
+
+## Features
+
+- **Task Management**: Create, edit, and track tasks with drag-and-drop functionality
+- **Focus Timer**: Pomodoro-style timer with work/break cycles
+- **Dynamic Backgrounds**: Theme-aware background images that change with light/dark mode
+- **Responsive Design**: Works on mobile and desktop
+
+## Background System
+
+The app includes a dynamic background system that:
+
+1. Automatically switches between day/night variants based on theme
+2. Supports multiple background sets that can be selected by users
+3. Provides smooth transitions between backgrounds
+
+To add a new background set:
+
+1. Add the image files to `/public/backgrounds/` (both light and dark variants)
+2. Update the `backgroundSets` array in `/components/main/background/background.jsx`
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 

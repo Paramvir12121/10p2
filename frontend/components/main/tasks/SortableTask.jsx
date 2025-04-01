@@ -85,12 +85,12 @@ export function SortableTask({
 
   // Generate dynamic class names based on task state
   const taskClassNames = [
-    'flex items-center gap-1 p-1 rounded-md border text-xs',
-    isDragging ? 'border-primary/60 bg-primary/5' : 'border-border',
-    completed ? 'bg-muted/50' : 'bg-background',
-    isMainTask && !completed ? 'border-primary/50 bg-primary/5' : '',
+    'flex items-center gap-0.5 py-0.5 px-1 rounded-sm border text-[11px] min-h-[22px] w-full',
+    isDragging ? 'border-primary/60 bg-primary/5' : 'border-slate-200 dark:border-slate-800',
+    completed ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-900',
+    isMainTask && !completed ? 'border-primary/40 bg-primary/5' : '',
     'transition-all duration-200',
-    isDragOverlay ? 'shadow-md bg-card' : '',
+    isDragOverlay ? 'shadow-sm bg-card' : '',
     isNew ? 'task-enter' : '',
     isCompleting ? 'task-complete' : '',
     // Add cursor not-allowed for completed tasks when dragging
@@ -109,52 +109,52 @@ export function SortableTask({
     >
       <button
         onClick={handleToggle}
-        className={`flex-none w-4 h-4 text-primary ${!completed ? 'hover:text-primary/80' : 'hover:text-primary/60'} transition-colors`}
+        className={`flex-none w-3.5 h-3.5 ${!completed ? 'text-primary/80 hover:text-primary' : 'text-slate-400 hover:text-slate-500'} transition-colors`}
         aria-label={completed ? "Mark as incomplete" : "Mark as complete"}
       >
         {completed ? (
-          <CheckCircle className="h-4 w-4 transition-transform duration-200 ease-spring" />
+          <CheckCircle className="h-3 w-3" />
         ) : (
-          <Circle className={`h-4 w-4 ${isCompleting ? 'scale-90' : ''} transition-transform duration-200`} />
+          <Circle className={`h-3 w-3 ${isCompleting ? 'scale-90' : ''}`} />
         )}
       </button>
       
       <span 
-        className={`flex-grow text-xs ${completed ? 'line-through text-muted-foreground' : ''} transition-all duration-300`}
+        className={`flex-grow text-[11px] leading-tight truncate ${completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'} transition-all duration-300`}
       >
         {text}
       </span>
       
       {isMainTask && !completed && (
-        <Star className="h-4 w-4 text-amber-500 flex-none animate-pulse" />
+        <Star className="h-3 w-3 text-amber-500/80 flex-none" />
       )}
       
-      {!isDragOverlay && !completed && ( // Only show drag handle if not completed
+      {!isDragOverlay && !completed && (
         <div 
           {...listeners}
-          className="flex-none w-4 h-4 text-muted-foreground cursor-grab active:cursor-grabbing hover:text-primary transition-colors"
+          className="flex-none w-3.5 h-3.5 text-slate-400 cursor-grab active:cursor-grabbing hover:text-primary/70 transition-colors"
           title="Drag to reorder or set as focus"
         >
-          <GripVertical className="h-4 w-4" />
+          <GripVertical className="h-3 w-3" />
         </div>
       )}
       
-      {!isDragOverlay && completed && ( // Show non-interactive drag handle for completed tasks
+      {!isDragOverlay && completed && (
         <div 
-          className="flex-none w-4 h-4 text-muted-foreground/40 cursor-not-allowed transition-colors"
+          className="flex-none w-3.5 h-3.5 text-slate-300 dark:text-slate-600 cursor-not-allowed transition-colors"
           title="Completed tasks can't be set as focus"
         >
-          <GripVertical className="h-4 w-4" />
+          <GripVertical className="h-3 w-3" />
         </div>
       )}
       
-      {!isDragOverlay && ( // Don't show buttons on the overlay
+      {!isDragOverlay && (
         <button
           onClick={onDelete}
-          className="flex-none w-4 h-4 text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100"
+          className="flex-none w-3.5 h-3.5 text-slate-400 hover:text-red-500/80 transition-colors"
           aria-label="Delete task"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3 w-3" />
         </button>
       )}
     </div>

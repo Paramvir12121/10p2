@@ -17,7 +17,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   
   // Break timer states
   const [breakTime, setBreakTime] = useState(0);
-  const [breakTimerRunning, setBreakTimerRunning] = useState(false); // Fixed syntax error here
+  const [breakTimerRunning, setBreakTimerRunning] = useState(false);
   const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
   const [breakCollapsed, setBreakCollapsed] = useState(false);
   
@@ -27,7 +27,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   const [breakProgress, setBreakProgress] = useState(0);
   const [earnedBreakTime, setEarnedBreakTime] = useState(0);
 
-  // Get context functions to synchronize timer state - renamed to avoid conflicts
+  // Get context functions to synchronize timer state
   const { 
     setWorkTimerRunning: updateGlobalWorkTimerState, 
     setBreakTimerRunning: updateGlobalBreakTimerState,
@@ -220,14 +220,14 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   // Custom card header component
   const CardHeader = ({ title, icon, collapsed, toggleCollapse }) => (
     <div 
-      className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-lg cursor-pointer"
+      className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-md cursor-pointer"
       onClick={toggleCollapse}
     >
-      <div className="flex items-center gap-1 text-sm">
-        {icon && <span className="text-slate-500">{icon}</span>}
+      <div className="flex items-center gap-1 text-[11px] font-medium">
+        {icon && <span className="text-primary/70">{icon}</span>}
         {title}
       </div>
-      <Button variant="ghost" size="sm" className="w-6 h-6 p-0">
+      <Button variant="ghost" size="sm" className="w-5 h-5 p-0">
         {collapsed ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
         <span className="sr-only">Toggle</span>
       </Button>
@@ -237,9 +237,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   return (
     <div className="flex flex-col gap-2 max-w-sm mx-auto">
       <div className="flex flex-col gap-2">
-        {/* Work Timer - simplified */}
+        {/* Work Timer - refined */}
         {showWorkTimer && (
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
+          <div className="rounded-md border border-slate-200 dark:border-slate-800 shadow-sm bg-card">
             <CardHeader 
               title="Focus Timer" 
               icon={<Clock className="h-3 w-3" />} 
@@ -248,15 +248,15 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
             />
             
             {!workCollapsed && (
-              <div className="flex items-center p-2 relative">
-                <div className="w-20 h-20">
+              <div className="flex items-center p-2 gap-2 relative">
+                <div className="w-18 h-18 flex-shrink-0">
                   <CircularProgressbar 
                     value={workProgress}
                     text={workDisplayTime}
-                    strokeWidth={4}
+                    strokeWidth={5}
                     styles={buildStyles({
                       strokeLinecap: 'round',
-                      textSize: '12px',
+                      textSize: '12px', // Slightly larger text
                       fontWeight: 'bold',
                       pathColor: workRunning ? `rgba(99, 102, 241, 1)` : '#6366f1',
                       textColor: workRunning ? '#6366f1' : '#64748b',
@@ -265,11 +265,11 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                   />
                 </div>
                 
-                <div className="ml-3 flex-1">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span>Session: {Math.floor(workTime / 60)}m {workTime % 60}s</span>
-                      <span className="text-indigo-600 dark:text-indigo-400">Break: {Math.floor(earnedBreakTime / 60)}m</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col gap-1 mb-1">
+                    <div className="flex justify-between text-[11px] font-medium">
+                      <span className="text-slate-500">Session: {Math.floor(workTime / 60)}m {workTime % 60}s</span>
+                      <span className="text-indigo-600/90 dark:text-indigo-400">Break: {Math.floor(earnedBreakTime / 60)}m</span>
                     </div>
                     
                     <div className="flex gap-1">
@@ -277,7 +277,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="destructive" 
                           size="sm" 
-                          className="h-7 text-xs px-2 flex-1"
+                          className="h-6 text-[11px] px-2 flex-1 rounded-sm"
                           onClick={handleWorkStop}
                         >
                           <Pause className="h-3 w-3 mr-1" /> Pause
@@ -286,7 +286,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="default" 
                           size="sm" 
-                          className="bg-indigo-600 h-7 text-xs px-2 flex-1"
+                          className="bg-indigo-600 h-6 text-[11px] px-2 flex-1 rounded-sm"
                           onClick={handleWorkStart}
                         >
                           <Play className="h-3 w-3 mr-1" /> Start
@@ -295,7 +295,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-7 px-2"
+                        className="h-6 w-6 p-0 rounded-sm"
                         onClick={handleWorkReset}
                       >
                         <RefreshCcw className="h-3 w-3" />
@@ -308,9 +308,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
           </div>
         )}
         
-        {/* Break Timer - simplified */}
+        {/* Break Timer - refined for consistency with work timer */}
         {showBreakTimer && (
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-card">
+          <div className="rounded-md border border-slate-200 dark:border-slate-800 shadow-sm bg-card">
             <CardHeader 
               title="Break Timer" 
               icon={<Coffee className="h-3 w-3" />} 
@@ -319,16 +319,16 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
             />
             
             {!breakCollapsed && (
-              <div className="flex items-center p-2 relative">
-                <div className="w-20 h-20">
+              <div className="flex items-center p-2 gap-2 relative">
+                <div className="w-18 h-18 flex-shrink-0">
                   <CircularProgressbar 
                     value={breakProgress}
                     text={breakTime > 0 ? breakDisplayTime : "00:00"}
-                    strokeWidth={4}
+                    strokeWidth={5}
                     counterClockwise
                     styles={buildStyles({
                       strokeLinecap: 'round',
-                      textSize: '12px',
+                      textSize: '12px', // Slightly larger text
                       fontWeight: 'bold',
                       pathColor: breakTimerRunning ? `rgba(34, 197, 94, 1)` : '#22c55e',
                       textColor: breakTimerRunning ? '#22c55e' : '#64748b',
@@ -337,12 +337,12 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                   />
                 </div>
                 
-                <div className="ml-3 flex-1">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span>Available: {Math.floor(earnedBreakTime / 60)}m</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col gap-1 mb-1">
+                    <div className="flex justify-between text-[11px] font-medium">
+                      <span className="text-slate-500">Available: {Math.floor(earnedBreakTime / 60)}m</span>
                       {breakTimerRunning && (
-                        <span className="text-green-600 dark:text-green-400">Left: {Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
+                        <span className="text-green-600/90 dark:text-green-400">Left: {Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
                       )}
                     </div>
                     
@@ -351,7 +351,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="destructive" 
                           size="sm" 
-                          className="h-7 text-xs px-2 flex-1" 
+                          className="h-6 text-[11px] px-2 flex-1 rounded-sm" 
                           onClick={handleBreakStop}
                         >
                           <Pause className="h-3 w-3 mr-1" /> Pause
@@ -360,7 +360,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="default" 
                           size="sm" 
-                          className="bg-green-600 h-7 text-xs px-2 flex-1"
+                          className="bg-green-600 h-6 text-[11px] px-2 flex-1 rounded-sm"
                           onClick={handleBreakStart}
                           disabled={earnedBreakTime <= 0}
                         >
@@ -370,7 +370,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-7 px-2"
+                        className="h-6 w-6 p-0 rounded-sm"
                         onClick={handleBreakEnd}
                       >
                         <ZapOff className="h-3 w-3" />
@@ -384,7 +384,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
         )}
       </div>
       
-      {/* Session Controls - simplified */}
+      {/* Session Controls */}
       {(showWorkTimer || showBreakTimer) ? (
         <SessionControl
           workRunning={workRunning}

@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { DashProvider } from "@/provider/dashContext";
+import { BackgroundProvider } from "@/components/main/background/background.jsx";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +28,16 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `} >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystemdisableTransitionOnChange>
           <DashProvider>
-            <div className="flex flex-col min-h-screen">
-              <div className="flex-1 ">
-                {children}
+            <BackgroundProvider>
+              <div className="flex flex-col min-h-screen">
+                <div className="flex-1 ">
+                  {children}
+                </div>
+                <Navbar className="bottom-10" />
+                <Footer />
               </div>
-              <Navbar className="bottom-10" />
-              <Footer />
-            </div>
-            <Toaster richColors position="top-center" />
+              <Toaster richColors position="top-center" />
+            </BackgroundProvider>
           </DashProvider>
         </ThemeProvider>
       </body>

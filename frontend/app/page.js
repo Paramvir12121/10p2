@@ -12,13 +12,12 @@ export default function Home() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-row items-start justify-between">
-        <div className="space-y-6">
-          {/* <h1 className="text-3xl font-bold mb-8">Focus Dashboard</h1> */}
+    <div className="container mx-auto px-3 py-6">
+      <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+        <div>
           <AllTasks initialTasks={initialTasks} />
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end w-full md:w-auto mt-4 md:mt-0">
           <Timer />
         </div>
       </div>

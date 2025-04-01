@@ -43,39 +43,44 @@ const Tasks = ({
     });
 
     return (
-        <div className="w-full max-w-md">
-            <Card className="p-4 shadow-sm mb-4">
-                <div className="flex items-center gap-1 mb-2">
-                    <ListTodo className="h-4 w-4 text-primary" />
-                    <h2 className="text-sm font-semibold">Task List</h2>
+        <div className="w-full max-w-[320px]">
+            <Card className="p-2 shadow-sm mb-4 border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-1 mb-1">
+                    <ListTodo className="h-3.5 w-3.5 text-primary/70" />
+                    <h2 className="text-[13px] font-medium">Task List</h2>
                 </div>
                 
                 {/* Task input form */}
-                <div className="flex mb-2">
+                <div className="flex mb-1.5">
                     <Input
                         type="text"
                         placeholder="Add a new task"
                         value={newTask}
                         onChange={(e) => setNewTask(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        className="flex-grow mr-1 text-sm"
+                        className="flex-grow mr-1 text-[11px] h-7 rounded-sm"
                     />
-                    <Button className="text-sm px-2 py-1" onClick={handleAddTask}>Add</Button>
+                    <Button 
+                      className="text-[11px] px-2 h-7 rounded-sm" 
+                      onClick={handleAddTask}
+                    >
+                      Add
+                    </Button>
                 </div>
                 
                 {/* Task filtering tabs */}
                 <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-                    <TabsList className="w-full mb-2">
-                        <TabsTrigger value="all" className="flex-1 text-xs">All</TabsTrigger>
-                        <TabsTrigger value="active" className="flex-1 text-xs">Active</TabsTrigger>
-                        <TabsTrigger value="completed" className="flex-1 text-xs">Completed</TabsTrigger>
+                    <TabsList className="w-full mb-1.5 h-6 p-0.5 rounded-sm">
+                        <TabsTrigger value="all" className="flex-1 text-[10px] h-5 rounded-sm">All</TabsTrigger>
+                        <TabsTrigger value="active" className="flex-1 text-[10px] h-5 rounded-sm">Active</TabsTrigger>
+                        <TabsTrigger value="completed" className="flex-1 text-[10px] h-5 rounded-sm">Completed</TabsTrigger>
                     </TabsList>
                     
                     {/* Task sortable context - DndContext moved to parent */}
                     <SortableContext items={filteredTasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
-                        <div className="space-y-2">
+                        <div className="space-y-1 overflow-y-auto max-h-[35vh]">
                             {filteredTasks.length === 0 ? (
-                                <div className="text-center py-4 text-gray-500 text-sm">
+                                <div className="text-center py-3 text-slate-500 text-[11px] bg-slate-50 dark:bg-slate-900/30 rounded-sm">
                                     No tasks found
                                 </div>
                             ) : (

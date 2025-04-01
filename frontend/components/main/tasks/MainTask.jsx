@@ -34,10 +34,10 @@ const MainTask = ({ focusTask, onComplete, isReceivingTask = false, isCompletedO
 
     // Determine animation classes
     const cardAnimation = [
-        'p-2 shadow-sm max-w-md text-sm',
-        isOver ? 'ring-4 ring-primary/30 scale-[1.02]' : '',
-        isReceivingTask ? 'bg-primary/5 ring-2 ring-primary/20 focus-receive' : '',
-        (!isOver && !isReceivingTask) ? 'hover:shadow-md hover:border-primary/20' : '',
+        'p-2 shadow-sm max-w-[320px] w-full text-xs',
+        isOver ? 'ring-2 ring-primary/30 scale-[1.01]' : '',
+        isReceivingTask ? 'bg-primary/5 ring-1 ring-primary/20 focus-receive' : '',
+        (!isOver && !isReceivingTask) ? 'hover:shadow-sm hover:border-primary/20' : '',
         isCompletedOver ? completedDropWarning : '',
     ].filter(Boolean).join(' ');
 
@@ -46,42 +46,40 @@ const MainTask = ({ focusTask, onComplete, isReceivingTask = false, isCompletedO
             ref={setNodeRef} 
             className={cardAnimation}
         >
-            <div className="flex items-center justify-between gap-1 mb-2">
+            <div className="flex items-center justify-between gap-1 mb-1.5">
                 <div className="flex items-center gap-1">
-                    <Target className="h-4 w-4 text-primary" />
-                    <h2 className="text-sm font-semibold">Current Focus</h2>
+                    <Target className="h-3.5 w-3.5 text-primary/70" />
+                    <h2 className="text-xs font-semibold">Current Focus</h2>
                 </div>
                 
-                {/* Complete button moved outside the task container */}
                 {focusTask && (
                     <Button 
                         size="sm" 
                         variant="outline" 
-                        className="gap-1 text-xs px-2 py-1"
+                        className="gap-1 text-[10px] px-1.5 py-0 h-5 rounded-sm"
                         onClick={() => onComplete(focusTask.id)}
                     >
-                        <CheckCircle className="h-3 w-3" />
+                        <CheckCircle className="h-2.5 w-2.5" />
                         Complete
                     </Button>
                 )}
             </div>
             
             {focusTask ? (
-                <div className={`border rounded-md p-2 text-sm transition-all duration-300 
+                <div className={`border rounded-sm p-1.5 text-[11px] transition-all duration-300 min-h-[40px] flex items-center
                     ${isOver ? 'bg-primary/10 border-primary/40' : 'bg-primary/5 border-primary/20'}
                     ${showEnterAnimation ? 'task-focus-enter' : ''}`}
                 >
-                    <p>{focusTask.text}</p>
+                    <p className="leading-tight">{focusTask.text}</p>
                 </div>
             ) : (
-                <div className={`text-center py-4 text-xs rounded-lg transition-all duration-300
-                    ${isOver ? 'bg-primary/10 border-2 border-dashed border-primary/40 scale-[1.02]' : 'border border-dashed border-primary/20'}
+                <div className={`text-center py-3 text-[11px] rounded-sm transition-all duration-300 min-h-[40px] flex flex-col justify-center
+                    ${isOver ? 'bg-primary/10 border border-dashed border-primary/40 scale-[1.02]' : 'border border-dashed border-primary/20'}
                     ${isReceivingTask ? 'animate-pulse' : ''}`}
                 >
                     {isOver ? (
                         <>
                             <p className="font-medium text-primary">Drop to set as focus</p>
-                            <p className="text-sm">Release to add this task as your main focus</p>
                         </>
                     ) : (
                         <>
