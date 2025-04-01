@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { DashProvider } from "@/provider/dashContext";
 import { BackgroundProvider } from "@/components/main/background/background.jsx";
+import { DraggableProvider } from "@/provider/draggableContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,14 +30,16 @@ export default function RootLayout({ children }) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystemdisableTransitionOnChange>
           <DashProvider>
             <BackgroundProvider>
-              <div className="flex flex-col min-h-screen">
-                <div className="flex-1 ">
-                  {children}
+              <DraggableProvider>
+                <div className="flex flex-col min-h-screen">
+                  <div className="flex-1 ">
+                    {children}
+                  </div>
+                  <Navbar className="bottom-10" />
+                  <Footer />
                 </div>
-                <Navbar className="bottom-10" />
-                <Footer />
-              </div>
-              <Toaster richColors position="top-center" />
+                <Toaster richColors position="top-center" />
+              </DraggableProvider>
             </BackgroundProvider>
           </DashProvider>
         </ThemeProvider>

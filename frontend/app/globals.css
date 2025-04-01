@@ -158,6 +158,13 @@
   100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
 }
 
+/* Draggable component animations */
+@keyframes draggable-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+  70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
 @layer components {
   .task-enter {
     animation: task-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -182,6 +189,24 @@
   
   .focus-pulse {
     animation: focus-pulse 1.5s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+  }
+  
+  /* Draggable styles */
+  .draggable-wrapper {
+    @apply rounded-md transition-all duration-200;
+  }
+  
+  .draggable-active {
+    @apply shadow-lg;
+    animation: draggable-pulse 2s infinite;
+  }
+  
+  .draggable-handle {
+    @apply cursor-grab py-1 px-2 rounded-t-md bg-card border-b border-border flex items-center justify-center hover:bg-muted/70 transition-colors;
+  }
+  
+  .draggable-handle:active {
+    @apply cursor-grabbing;
   }
 }
 

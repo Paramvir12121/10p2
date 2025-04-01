@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Timer from "@/components/main/timer/DoubleTimer";
 import AllTasks from "@/components/main/tasks/AllTasks";
+import DraggableWrapper from "@/components/ui/DraggableWrapper";
 
 export default function Home() {
   // Initial tasks data
@@ -11,16 +13,31 @@ export default function Home() {
     { id: '3', text: 'Design user interface mockups', completed: false },
   ];
 
+  // Initialize with safe default positions
+  const [timerPosition, setTimerPosition] = useState({ x: 400, y: 20 });
+  
+  // Update positions after component mounts in browser
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setTimerPosition({ x: window.innerWidth - 420, y: 20 });
+    }
+  }, []);
+
   return (
-    <div className="container mx-auto px-3 py-6">
-      <div className="flex flex-col md:flex-row items-start justify-between gap-4">
-        <div>
+    <div className="container relative mx-auto px-3 py-6 min-h-screen">
+      {/* Draggable tasks */}
+      <DraggableWrapper id="tasks-component" defaultPosition={{ x: 20, y: 20 }} bounds="parent" zIndex={10}>
+        <div className="w-80 md:w-96">
           <AllTasks initialTasks={initialTasks} />
         </div>
-        <div className="flex justify-end w-full md:w-auto mt-4 md:mt-0">
+      </DraggableWrapper>
+      
+      {/* Draggable timer */}
+      <DraggableWrapper id="timer-component" defaultPosition={timerPosition} bounds="parent" zIndex={20}>
+        <div className="w-80 md:w-96">
           <Timer />
         </div>
-      </div>
+      </DraggableWrapper>
     </div>
   );
 }

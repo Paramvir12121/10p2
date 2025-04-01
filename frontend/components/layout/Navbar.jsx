@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useDashContext } from "@/provider/dashContext"
+import { useDraggableContext } from "@/provider/draggableContext" // Add this import
 import { 
   Clock, 
   Home,
@@ -18,7 +19,8 @@ import {
   Moon,
   Check,
   Timer,
-  Coffee
+  Coffee,
+  LayoutGrid // Add this icon for reset layout
 } from "lucide-react" // Using lucide-react icons
 import { BackgroundSwitcher } from "@/components/main/background/background"; // Add this import
 import {
@@ -52,6 +54,7 @@ export default function Navbar({ className, ...props }) {
     toggleBreakTimer,
     toggleBothTimers
   } = useDashContext()
+  const { resetAllPositions } = useDraggableContext(); // Add this hook
   
   // Only show theme toggle after mounting to avoid hydration mismatch
   React.useEffect(() => {
@@ -82,7 +85,11 @@ export default function Navbar({ className, ...props }) {
     },
     { icon: Compass, label: "Inspiration", path: "/inspiration" },
     { icon: ThemeIcon, label: "Toggle Theme", onClick: toggleTheme },
-    { icon: Settings, label: "Settings", onClick: () => console.log("Settings clicked") }
+    { 
+      icon: Settings, 
+      label: "Settings", 
+      dropdown: true, // Change this to true
+    }
   ]
 
   React.useEffect(() => {
@@ -174,6 +181,37 @@ export default function Navbar({ className, ...props }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="center" className="w-48">
                       <BackgroundSwitcher />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              } else if (item.icon === Settings) {
+                // Special case for Settings dropdown
+                return (
+                  <DropdownMenu key={index}>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onMouseLeave={() => setActiveIndex(null)}
+                      >
+                        <div className="flex justify-center items-center">
+                          <div className="w-5 h-5 flex justify-center items-center">
+                            <item.icon className="w-full h-full" />
+                          </div>
+                        </div>
+                        <span className="sr-only">{item.label}</span>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center" className="w-48">
+                      <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={resetAllPositions}>
+                        <span className="flex items-center">
+                          <LayoutGrid className="mr-2 h-3.5 w-3.5" />
+                          Reset Layout
+                        </span>
+                      </DropdownMenuItem>
+                      {/* Other settings items can go here */}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 );
