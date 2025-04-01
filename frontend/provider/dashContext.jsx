@@ -15,6 +15,10 @@ export const DashProvider = ({ children }) => {
     const [showWorkTimer, setShowWorkTimer] = useState(true);
     const [showBreakTimer, setShowBreakTimer] = useState(true);
     
+    // Add timer running states to share with components
+    const [workTimerRunning, setWorkTimerRunning] = useState(false);
+    const [breakTimerRunning, setBreakTimerRunning] = useState(false);
+    
     // Toggle functions for easier control
     const toggleWorkTimer = () => setShowWorkTimer(prev => !prev);
     const toggleBreakTimer = () => setShowBreakTimer(prev => !prev);
@@ -41,7 +45,12 @@ export const DashProvider = ({ children }) => {
         setShowBreakTimer,
         toggleWorkTimer,
         toggleBreakTimer,
-        toggleBothTimers
+        toggleBothTimers,
+        // Add timer running states
+        workTimerRunning,
+        setWorkTimerRunning,
+        breakTimerRunning,
+        setBreakTimerRunning
     };
 
     return <DashContext.Provider value={value}>

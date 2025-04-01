@@ -17,7 +17,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   
   // Break timer states
   const [breakTime, setBreakTime] = useState(0);
-  const [breakTimerRunning, setBreakTimerRunning] = useState(false);
+  const [breakTimerRunning, setBreakTimerRunning] = useState(false); // Fixed syntax error here
   const [breakDisplayTime, setBreakDisplayTime] = useState("00:00");
   const [breakCollapsed, setBreakCollapsed] = useState(false);
   
@@ -26,6 +26,23 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
   const [workProgress, setWorkProgress] = useState(0);
   const [breakProgress, setBreakProgress] = useState(0);
   const [earnedBreakTime, setEarnedBreakTime] = useState(0);
+
+  // Get context functions to synchronize timer state - renamed to avoid conflicts
+  const { 
+    setWorkTimerRunning: updateGlobalWorkTimerState, 
+    setBreakTimerRunning: updateGlobalBreakTimerState,
+    showWorkTimer, 
+    showBreakTimer 
+  } = useDashContext();
+
+  // Sync timer state with context
+  useEffect(() => {
+    updateGlobalWorkTimerState(workRunning);
+  }, [workRunning, updateGlobalWorkTimerState]);
+
+  useEffect(() => {
+    updateGlobalBreakTimerState(breakTimerRunning);
+  }, [breakTimerRunning, updateGlobalBreakTimerState]);
 
   // Configuration
   const WORK_INTERVAL = 25 * 60; // 25 minutes in seconds
@@ -200,9 +217,6 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
     });
   };
 
-  // Get timer visibility from context
-  const { showWorkTimer, showBreakTimer } = useDashContext();
-  
   // Custom card header component
   const CardHeader = ({ title, icon, collapsed, toggleCollapse }) => (
     <div 

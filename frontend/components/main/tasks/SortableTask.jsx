@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Trash2, GripVertical, CheckCircle, Circle, Star } from 'lucide-react';
 
-export function SortableTask({ id, text, completed, isMainTask, onToggle, onDelete }) {
+export function SortableTask({ 
+  id, 
+  text, 
+  completed, 
+  isMainTask, 
+  onToggle, 
+  onDelete,
+  isDragOverlay = false,
+  isAnimating = false,
+  registerRef = () => {}
+}) {
   const {
     attributes,
     listeners,
@@ -11,25 +21,59 @@ export function SortableTask({ id, text, completed, isMainTask, onToggle, onDele
     transform,
     transition,
     isDragging
-  } = useSortable({ id });
+  } = useSortable({ 
+    id,
+    transition: {
+      duration: 300,
+      easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+    }
+  });
 
+  // Use a ref to combine sortable ref with our registration ref
+  const ref = useRef(null);
+
+  // Register the element for animation tracking
+  useEffect(() => {
+    if (ref.current) {
+      registerRef(ref.current);
+    }
+  }, [registerRef]);
+
+  // Combined ref handler
+  const setRefs = (element) => {
+    setNodeRef(element);
+    ref.current = element;
+  };
+
+  // Enhanced animation styles without scaling that might cause stretching
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging || isAnimating ? 0.6 : 1,
     zIndex: isDragging ? 1 : 0,
+    boxShadow: isDragging || isDragOverlay ? '0 4px 8px rgba(0,0,0,0.1)' : 'none',
+    height: 'auto',
+    minHeight: isDragOverlay ? '56px' : undefined,
+    // Add visibility for animating state
+    visibility: isAnimating ? 'hidden' : 'visible'
   };
+
+  // Generate dynamic class names based on task state
+  const taskClassNames = [
+    'flex items-center gap-2 p-2 rounded-lg border',
+    isDragging ? 'border-primary/60 bg-primary/5' : 'border-border',
+    completed ? 'bg-muted/50' : 'bg-background',
+    isMainTask && !completed ? 'border-primary/50 bg-primary/5' : '',
+    'transition-all duration-200 ease-in-out hover:border-primary/30',
+    isDragOverlay ? 'shadow-md bg-card' : '',
+  ].filter(Boolean).join(' ');
 
   return (
     <div
-      ref={setNodeRef}
+      ref={setRefs}
       style={style}
-      className={`
-        flex items-center gap-2 p-2 rounded-lg border 
-        ${isDragging ? 'border-primary bg-primary/5' : 'border-border'} 
-        ${completed ? 'bg-muted/50' : 'bg-background'} 
-        ${isMainTask && !completed ? 'border-primary/50 bg-primary/5' : ''}
-      `}
+      className={taskClassNames}
+      {...(!isDragOverlay ? attributes : {})}
     >
       <button
         onClick={onToggle}
@@ -49,21 +93,25 @@ export function SortableTask({ id, text, completed, isMainTask, onToggle, onDele
         <Star className="h-4 w-4 text-amber-500 flex-none" />
       )}
       
-      <button
-        onClick={onDelete}
-        className="flex-none w-5 h-5 text-muted-foreground hover:text-destructive transition-colors"
-        aria-label="Delete task"
-      >
-        <Trash2 className="h-4 w-4" />
-      </button>
-      
-      <div 
-        {...attributes} 
-        {...listeners}
-        className="flex-none w-5 h-5 text-muted-foreground cursor-grab active:cursor-grabbing"
-      >
-        <GripVertical className="h-5 w-5" />
-      </div>
+      {!isDragOverlay && ( // Don't show buttons on the overlay
+        <>
+          <button
+            onClick={onDelete}
+            className="flex-none w-5 h-5 text-muted-foreground hover:text-destructive transition-colors"
+            aria-label="Delete task"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+          
+          <div 
+            {...listeners}
+            className="flex-none w-5 h-5 text-muted-foreground cursor-grab active:cursor-grabbing hover:text-primary transition-colors"
+            title="Drag to reorder or set as focus"
+          >
+            <GripVertical className="h-5 w-5" />
+          </div>
+        </>
+      )}
     </div>
   );
 }
