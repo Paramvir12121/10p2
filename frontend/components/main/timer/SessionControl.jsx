@@ -44,14 +44,14 @@ const SessionControl = ({
         >
           End Session
         </Button>
-        <Button 
+        {/* <Button 
           variant="outline" 
           size="sm"
           className="flex items-center w-5 h-5 p-0 border-slate-300 rounded-sm"
           onClick={() => toast.info("Settings", { description: "Timer settings coming soon!" })}
         >
           <Settings className="h-2.5 w-2.5" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

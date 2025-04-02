@@ -14,7 +14,7 @@ export default function Home() {
   ];
 
   // Initialize with safe default positions
-  const [timerPosition, setTimerPosition] = useState({ x: 400, y: 20 });
+  const [timerPosition, setTimerPosition] = useState({ x: 40, y: 20 });
   
   // Update positions after component mounts in browser
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container relative mx-auto  min-h-screen">
+    <div className="container relative min-h-screen">
       {/* Draggable tasks */}
       <DraggableWrapper id="tasks-component" defaultPosition={{ x: 20, y: 20 }} bounds="parent" zIndex={10}>
         
