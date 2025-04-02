@@ -152,8 +152,8 @@ export default function DraggableWrapper({
       className={cn(
         "absolute",
         isDragging && "cursor-grabbing",
-        "transition-shadow shadow-md",
-        isDragging && "shadow-lg",
+        // "transition-shadow shadow-md",
+        // isDragging && "shadow-lg",
         className
       )}
       style={{ 

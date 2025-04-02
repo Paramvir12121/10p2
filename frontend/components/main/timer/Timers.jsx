@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useDashContext } from '@/provider/dashContext';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { Play, Pause, RotateCcw, Clock } from 'lucide-react';
+import { Play, Pause, RotateCcw, Clock, GripVertical } from 'lucide-react';
 
 // Focus Timer Component
 export function FocusTimer() {
@@ -66,11 +66,17 @@ export function FocusTimer() {
   }, [isRunning, setWorkTimerRunning]);
 
   return (
-    <Card className="shadow-md overflow-hidden">
+    <Card className=" overflow-hidden">
       <CardHeader className="pb-2 bg-primary/5 card-header">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Clock className="h-5 w-5" /> Focus Timer
-        </CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Clock className="h-5 w-5" /> Focus Timer
+          </CardTitle>
+          {/* Add drag handle */}
+          <div className="card-header h-6 w-6 flex items-center justify-center rounded-sm hover:bg-muted/80">
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center p-6">
         <div className="w-40 h-40">
@@ -169,9 +175,15 @@ export function BreakTimer() {
   return (
     <Card className="shadow-md overflow-hidden">
       <CardHeader className="pb-2 bg-secondary/5 card-header">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Clock className="h-5 w-5" /> Break Timer
-        </CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Clock className="h-5 w-5" /> Break Timer
+          </CardTitle>
+          {/* Add drag handle */}
+          <div className="card-header h-6 w-6 flex items-center justify-center rounded-sm hover:bg-muted/80">
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center p-6">
         <div className="w-40 h-40">

@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Target, CheckCircle } from 'lucide-react';
+import { Target, CheckCircle, GripVertical } from 'lucide-react';
 import { useDroppable } from '@dnd-kit/core';
 
 const MainTask = ({ focusTask, onComplete, isReceivingTask = false, isCompletedOver = false }) => {
@@ -52,17 +52,23 @@ const MainTask = ({ focusTask, onComplete, isReceivingTask = false, isCompletedO
                     <h2 className="text-xs font-semibold">Current Focus</h2>
                 </div>
                 
-                {focusTask && (
-                    <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="gap-1 text-[10px] px-1.5 py-0 h-5 rounded-sm"
-                        onClick={() => onComplete(focusTask.id)}
-                    >
-                        <CheckCircle className="h-2.5 w-2.5" />
-                        Complete
-                    </Button>
-                )}
+                <div className="flex items-center gap-1">
+                    {focusTask && (
+                        <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="gap-1 text-[10px] px-1.5 py-0 h-5 rounded-sm"
+                            onClick={() => onComplete(focusTask.id)}
+                        >
+                            <CheckCircle className="h-2.5 w-2.5" />
+                            Complete
+                        </Button>
+                    )}
+                    {/* Add drag handle */}
+                    <div className="card-header h-5 w-5 flex items-center justify-center rounded-sm hover:bg-muted/80">
+                        <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+                    </div>
+                </div>
             </div>
             
             {focusTask ? (

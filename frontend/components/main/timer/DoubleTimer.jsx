@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { Play, Pause, RefreshCcw, Clock, Coffee, ZapOff, ChevronDown, ChevronUp } from "lucide-react";
+import { Play, Pause, RefreshCcw, Clock, Coffee, ZapOff, ChevronDown, ChevronUp, GripVertical } from "lucide-react";
 import { useDashContext } from "@/provider/dashContext";
 import SessionControl, { StandaloneSessionControl } from "./SessionControl";
 
@@ -227,15 +227,21 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
         {icon && <span className="text-primary/70">{icon}</span>}
         {title}
       </div>
-      <Button variant="ghost" size="sm" className="w-5 h-5 p-0">
-        {collapsed ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
-        <span className="sr-only">Toggle</span>
-      </Button>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="sm" className="w-5 h-5 p-0">
+          {collapsed ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
+          <span className="sr-only">Toggle</span>
+        </Button>
+        {/* Add drag handle */}
+        <div className="card-header h-5 w-5 flex items-center justify-center rounded-sm hover:bg-muted/80">
+          <GripVertical className="h-3 w-3 text-muted-foreground" />
+        </div>
+      </div>
     </div>
   );
 
   return (
-    <div className="flex flex-col gap-2 max-w-sm mx-auto">
+    <div className="flex flex-col gap-2 max-w-sm mx-auto w-75 md:w-80">
       <div className="flex flex-col gap-2">
         {/* Work Timer - refined */}
         {showWorkTimer && (
