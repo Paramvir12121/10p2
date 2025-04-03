@@ -45,8 +45,7 @@ export function FocusedTask({ focusTask, toggleTaskCompletion }) {
           <div className="flex justify-between items-center mt-2">
             <Button 
               variant={focusTask.completed ? "outline" : "default"} 
-              className="flex-1 mr-2 text-base" {/* Increased text size */}
-              onClick={() => toggleTaskCompletion(focusTask.id)}
+              className="flex-1 mr-2 text-base" onClick={() => toggleTaskCompletion(focusTask.id)}
             >
               {focusTask.completed ? (
                 <>

@@ -34,8 +34,7 @@ export function TaskList({ tasks, setTaskAsFocus, toggleTaskCompletion, addTask,
               placeholder="Add a new task..."
               value={newTaskText}
               onChange={(e) => setNewTaskText(e.target.value)}
-              className="flex-1 text-base" {/* Increased text size */}
-            />
+              className="flex-1 text-base"        />
             <Button type="submit" size="sm">
               <Plus className="h-4 w-4" />
               <span className="sr-only">Add</span>
@@ -64,8 +63,7 @@ export function TaskList({ tasks, setTaskAsFocus, toggleTaskCompletion, addTask,
                     <span className="sr-only">{task.completed ? 'Mark incomplete' : 'Complete'}</span>
                   </Button>
                   <span 
-                    className={`flex-1 text-base ${task.completed ? 'line-through text-muted-foreground' : ''}`} {/* Increased text size */}
-                  >
+                    className={`flex-1 text-base ${task.completed ? 'line-through text-muted-foreground' : ''}`}  >
                     {task.text}
                   </span>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
