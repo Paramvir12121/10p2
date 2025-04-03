@@ -146,8 +146,8 @@ export default function Background() {
         )}
       </AnimatePresence>
       
-      {/* Overlay with overflow hidden to prevent any background scrollbar issues */}
-      <div className="absolute inset-0 bg-background/30 backdrop-blur-[2px] dark:bg-background/50 overflow-hidden" />
+      {/* Overlay with overflow hidden to prevent any background scrollbar issues backdrop-blur-[2px] */}
+      <div className="absolute inset-0 bg-background/30  dark:bg-background/50 overflow-hidden" />
     </div>
   );
 }
