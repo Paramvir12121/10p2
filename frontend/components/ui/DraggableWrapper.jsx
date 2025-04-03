@@ -65,17 +65,33 @@ export default function DraggableWrapper({
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     
-    const parentRect = elementRef.current.parentElement.getBoundingClientRect();
+    // Get references for boundary calculations
     const elemRect = elementRef.current.getBoundingClientRect();
     
     // Calculate new position
-    let newX = e.clientX - parentRect.left - offset.x;
-    let newY = e.clientY - parentRect.top - offset.y;
+    let newX, newY;
     
-    // Apply bounds if specified
-    if (bounds === 'parent') {
-      newX = Math.max(0, Math.min(newX, parentRect.width - elemRect.width));
-      newY = Math.max(0, Math.min(newY, parentRect.height - elemRect.height));
+    if (bounds === "viewport") {
+      // For viewport bounds, use window dimensions
+      newX = e.clientX - offset.x;
+      newY = e.clientY - offset.y;
+      
+      // Constrain to viewport
+      const maxX = window.innerWidth - elemRect.width;
+      const maxY = window.innerHeight - elemRect.height;
+      newX = Math.max(0, Math.min(newX, maxX));
+      newY = Math.max(0, Math.min(newY, maxY));
+    } else {
+      // For parent bounds (container)
+      const parentRect = elementRef.current.parentElement.getBoundingClientRect();
+      newX = e.clientX - parentRect.left - offset.x;
+      newY = e.clientY - parentRect.top - offset.y;
+      
+      // Apply bounds if specified
+      if (bounds === 'parent') {
+        newX = Math.max(0, Math.min(newX, parentRect.width - elemRect.width));
+        newY = Math.max(0, Math.min(newY, parentRect.height - elemRect.height));
+      }
     }
     
     setPosition({ x: newX, y: newY });
@@ -109,17 +125,32 @@ export default function DraggableWrapper({
     if (!isDragging) return;
     
     const touch = e.touches[0];
-    const parentRect = elementRef.current.parentElement.getBoundingClientRect();
     const elemRect = elementRef.current.getBoundingClientRect();
     
     // Calculate new position
-    let newX = touch.clientX - parentRect.left - offset.x;
-    let newY = touch.clientY - parentRect.top - offset.y;
+    let newX, newY;
     
-    // Apply bounds if specified
-    if (bounds === 'parent') {
-      newX = Math.max(0, Math.min(newX, parentRect.width - elemRect.width));
-      newY = Math.max(0, Math.min(newY, parentRect.height - elemRect.height));
+    if (bounds === "viewport") {
+      // For viewport bounds, use window dimensions 
+      newX = touch.clientX - offset.x;
+      newY = touch.clientY - offset.y;
+      
+      // Constrain to viewport
+      const maxX = window.innerWidth - elemRect.width;
+      const maxY = window.innerHeight - elemRect.height;
+      newX = Math.max(0, Math.min(newX, maxX));
+      newY = Math.max(0, Math.min(newY, maxY));
+    } else {
+      // For parent bounds
+      const parentRect = elementRef.current.parentElement.getBoundingClientRect();
+      newX = touch.clientX - parentRect.left - offset.x;
+      newY = touch.clientY - parentRect.top - offset.y;
+      
+      // Apply bounds if specified
+      if (bounds === 'parent') {
+        newX = Math.max(0, Math.min(newX, parentRect.width - elemRect.width));
+        newY = Math.max(0, Math.min(newY, parentRect.height - elemRect.height));
+      }
     }
     
     setPosition({ x: newX, y: newY });
@@ -152,8 +183,6 @@ export default function DraggableWrapper({
       className={cn(
         "absolute",
         isDragging && "cursor-grabbing",
-        // "transition-shadow shadow-md",
-        // isDragging && "shadow-lg",
         className
       )}
       style={{ 
