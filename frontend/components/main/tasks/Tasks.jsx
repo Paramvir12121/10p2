@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { ListTodo, Search, X, Filter, Calendar, Tag, CheckSquare } from 'lucide-react';
+import { ListTodo, Search, X, Filter, Calendar, Tag, CheckSquare, GripVertical } from 'lucide-react';
 import { SortableTask } from './SortableTask';
 import { 
     DropdownMenu,
@@ -115,82 +115,87 @@ const Tasks = ({
     });
 
     return (
-        <div className="w-full max-w-[320px]">
-            <Card className="p-2 shadow-sm mb-4 border-slate-200 dark:border-slate-800">
-                <div className="flex items-center justify-between gap-1 mb-1">
-                    <div className="flex items-center gap-1">
-                        <ListTodo className="h-3.5 w-3.5 text-primary/70" />
-                        <h2 className="text-[13px] font-medium">Task List</h2>
-                    </div>
-                    
-                    <div className="flex items-center gap-1">
-                        {/* Search button */}
-                        <Button 
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0"
-                            onClick={() => {
-                                setShowSearch(!showSearch);
-                                if (!showSearch) setTimeout(() => inputRef.current?.focus(), 100);
-                            }}
-                        >
-                            <Search className="h-3.5 w-3.5" />
-                        </Button>
-                        
-                        {/* Filter dropdown */}
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                                    <Filter className="h-3.5 w-3.5" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                                <DropdownMenuItem onSelect={() => setTagFilter(null)} className="text-xs">
-                                    <Calendar className="h-3.5 w-3.5 mr-1.5" /> All Tasks
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                
-                                <div className="text-xs p-2 text-muted-foreground">Filter by Tag</div>
-                                {allTags.length > 0 ? (
-                                    allTags.map(tag => (
-                                        <DropdownMenuCheckboxItem 
-                                            key={tag}
-                                            checked={tagFilter === tag}
-                                            onCheckedChange={() => setTagFilter(tag === tagFilter ? null : tag)}
-                                            className="text-xs"
-                                        >
-                                            <Tag className="h-3.5 w-3.5 mr-1.5" /> {tag}
-                                        </DropdownMenuCheckboxItem>
-                                    ))
-                                ) : (
-                                    <div className="text-xs p-2 text-center text-muted-foreground">No tags found</div>
-                                )}
-                                
-                                {selectedTasks.length > 0 && (
-                                    <>
-                                        <DropdownMenuSeparator />
-                                        <div className="text-xs p-2 text-muted-foreground">Batch Actions</div>
-                                        <DropdownMenuItem 
-                                            onSelect={() => handleBatchAction('complete')}
-                                            className="text-xs"
-                                        >
-                                            <CheckSquare className="h-3.5 w-3.5 mr-1.5" /> 
-                                            Complete Selected ({selectedTasks.length})
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem 
-                                            onSelect={() => handleBatchAction('delete')}
-                                            className="text-xs text-destructive"
-                                        >
-                                            <X className="h-3.5 w-3.5 mr-1.5" /> 
-                                            Delete Selected ({selectedTasks.length})
-                                        </DropdownMenuItem>
-                                    </>
-                                )}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+        <Card className="rounded-md border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden ">
+            <div className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 card-header">
+                <div className="flex items-center gap-1 text-[13px] font-medium">
+                    <ListTodo className="h-3.5 w-3.5 text-primary/70" />
+                    Task List
                 </div>
                 
+                <div className="flex items-center gap-1">
+                    {/* Search button */}
+                    <Button 
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={() => {
+                            setShowSearch(!showSearch);
+                            if (!showSearch) setTimeout(() => inputRef.current?.focus(), 100);
+                        }}
+                    >
+                        <Search className="h-3.5 w-3.5" />
+                    </Button>
+                    
+                    {/* Filter dropdown */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                <Filter className="h-3.5 w-3.5" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onSelect={() => setTagFilter(null)} className="text-xs">
+                                <Calendar className="h-3.5 w-3.5 mr-1.5" /> All Tasks
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            
+                            <div className="text-xs p-2 text-muted-foreground">Filter by Tag</div>
+                            {allTags.length > 0 ? (
+                                allTags.map(tag => (
+                                    <DropdownMenuCheckboxItem 
+                                        key={tag}
+                                        checked={tagFilter === tag}
+                                        onCheckedChange={() => setTagFilter(tag === tagFilter ? null : tag)}
+                                        className="text-xs"
+                                    >
+                                        <Tag className="h-3.5 w-3.5 mr-1.5" /> {tag}
+                                    </DropdownMenuCheckboxItem>
+                                ))
+                            ) : (
+                                <div className="text-xs p-2 text-center text-muted-foreground">No tags found</div>
+                            )}
+                            
+                            {selectedTasks.length > 0 && (
+                                <>
+                                    <DropdownMenuSeparator />
+                                    <div className="text-xs p-2 text-muted-foreground">Batch Actions</div>
+                                    <DropdownMenuItem 
+                                        onSelect={() => handleBatchAction('complete')}
+                                        className="text-xs"
+                                    >
+                                        <CheckSquare className="h-3.5 w-3.5 mr-1.5" /> 
+                                        Complete Selected ({selectedTasks.length})
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem 
+                                        onSelect={() => handleBatchAction('delete')}
+                                        className="text-xs text-destructive"
+                                    >
+                                        <X className="h-3.5 w-3.5 mr-1.5" /> 
+                                        Delete Selected ({selectedTasks.length})
+                                    </DropdownMenuItem>
+                                </>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    
+                    {/* Drag handle */}
+                    <div className="card-header h-6 w-6 flex items-center justify-center rounded-sm hover:bg-muted/80">
+                        <GripVertical className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                </div>
+            </div>
+            
+            <div className="p-2">
                 {/* Search bar (conditionally rendered) */}
                 {showSearch && (
                     <div className="flex mb-1.5">
@@ -293,8 +298,8 @@ const Tasks = ({
                         </div>
                     )}
                 </Tabs>
-            </Card>
-        </div>
+            </div>
+        </Card>
     );
 };
 

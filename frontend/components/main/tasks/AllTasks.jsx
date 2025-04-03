@@ -25,7 +25,7 @@ const KeyboardShortcutHelp = ({ open, onClose }) => {
   if (!open) return null;
   
   return (
-    <div className="absolute right-2 top-12 z-20 p-3 bg-card border rounded-md shadow-md w-64">
+    <div className="absolute right-2 top-12 z-20 p-3 bg-card border rounded-md shadow-md w-64 border-slate-200 dark:border-slate-800">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Keyboard Shortcuts</h3>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
@@ -244,7 +244,7 @@ const AllTasks = ({ initialTasks = [] }) => {
           <Undo2 className="h-3.5 w-3.5" />
         </Button>
         
-        <Button
+        {/* <Button
           variant="ghost"
           size="sm"
           className="h-6 w-6 p-0 ml-1"
@@ -252,7 +252,7 @@ const AllTasks = ({ initialTasks = [] }) => {
           title="Keyboard shortcuts"
         >
           <KeyRound className="h-3.5 w-3.5" />
-        </Button>
+        </Button> */}
       </div>
       
       {/* Keyboard shortcuts help */}

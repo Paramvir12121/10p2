@@ -28,16 +28,22 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container relative h-[calc(100vh-150px)] overflow-hidden">
+    <div className=" relative h-[calc(100vh-150px)] overflow-hidden">
       {/* Draggable tasks */}
       <DraggableWrapper id="tasks-component" defaultPosition={{ x: 20, y: 20 }} bounds="parent" zIndex={10}>
-        <AllTasks initialTasks={initialTasks} />
+          <div className=' px-5 pt-5'>
+            <AllTasks initialTasks={initialTasks} />
+          </div>
       </DraggableWrapper>
       
       {/* Draggable timer */}
+     
       <DraggableWrapper id="timer-component" defaultPosition={timerPosition} bounds="parent" zIndex={20}>
-        <Timer />
+        <div className=' px-5 pt-5'>
+        <Timer  />
+        </div>
       </DraggableWrapper>
+     
     </div>
   );
 }
