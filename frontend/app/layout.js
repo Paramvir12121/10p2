@@ -25,16 +25,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased `} >
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`} >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystemdisableTransitionOnChange>
           <DashProvider>
             <BackgroundProvider>
               <DraggableProvider>
-                <div className="flex flex-col min-h-screen">
-                  <div className="flex-1 ">
+                <div className="flex flex-col min-h-screen overflow-hidden">
+                  <main className="flex-1 pb-24">
                     {children}
-                  </div>
+                  </main>
                   <Navbar className="bottom-10" />
                   <Footer />
                 </div>

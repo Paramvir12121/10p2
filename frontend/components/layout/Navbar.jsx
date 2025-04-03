@@ -116,7 +116,7 @@ export default function Navbar({ className, ...props }) {
   }
 
   return (
-    <nav className={cn("fixed bottom-8 left-1/2 -translate-x-1/2 z-50", className)} {...props}>
+    <nav className={cn("fixed bottom-6 left-1/2 -translate-x-1/2 z-50", className)} {...props}>
       <div className="relative">
         <AnimatePresence>
           {activeIndex !== null && (

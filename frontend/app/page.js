@@ -19,23 +19,24 @@ export default function Home() {
   // Update positions after component mounts in browser
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setTimerPosition({ x: window.innerWidth - 420, y: 20 });
+      // Use a more responsive positioning based on viewport size
+      const viewportWidth = window.innerWidth;
+      // Keep timer on right side but not too close to edge on smaller screens
+      const rightPosition = Math.min(viewportWidth - 340, viewportWidth - 420);
+      setTimerPosition({ x: Math.max(40, rightPosition), y: 20 });
     }
   }, []);
 
   return (
-    <div className="container relative min-h-screen">
+    <div className="container relative h-[calc(100vh-150px)] overflow-hidden">
       {/* Draggable tasks */}
       <DraggableWrapper id="tasks-component" defaultPosition={{ x: 20, y: 20 }} bounds="parent" zIndex={10}>
-        
-          <AllTasks initialTasks={initialTasks} />
-        
+        <AllTasks initialTasks={initialTasks} />
       </DraggableWrapper>
       
       {/* Draggable timer */}
       <DraggableWrapper id="timer-component" defaultPosition={timerPosition} bounds="parent" zIndex={20}>
-          <Timer />
-       
+        <Timer />
       </DraggableWrapper>
     </div>
   );

@@ -22,7 +22,7 @@ export function TaskList({ tasks, setTaskAsFocus, toggleTaskCompletion, addTask,
   return (
     <Card className="shadow-md overflow-hidden">
       <CardHeader className="pb-2 bg-card/5 card-header">
-        <CardTitle className="text-lg flex items-center gap-2">
+        <CardTitle className="text-xl flex items-center gap-2"> {/* Increased from text-lg */}
           <ListTodo className="h-5 w-5" /> Task List
         </CardTitle>
       </CardHeader>
@@ -34,7 +34,7 @@ export function TaskList({ tasks, setTaskAsFocus, toggleTaskCompletion, addTask,
               placeholder="Add a new task..."
               value={newTaskText}
               onChange={(e) => setNewTaskText(e.target.value)}
-              className="flex-1"
+              className="flex-1 text-base" {/* Increased text size */}
             />
             <Button type="submit" size="sm">
               <Plus className="h-4 w-4" />
@@ -48,7 +48,7 @@ export function TaskList({ tasks, setTaskAsFocus, toggleTaskCompletion, addTask,
             {tasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 text-center text-muted-foreground">
                 <ListTodo className="h-10 w-10 mb-2 opacity-40" />
-                <p>No tasks yet</p>
+                <p className="text-base">No tasks yet</p> {/* Increased from default text size */}
                 <p className="text-sm mt-1">Add some tasks to get started</p>
               </div>
             ) : (
@@ -64,7 +64,7 @@ export function TaskList({ tasks, setTaskAsFocus, toggleTaskCompletion, addTask,
                     <span className="sr-only">{task.completed ? 'Mark incomplete' : 'Complete'}</span>
                   </Button>
                   <span 
-                    className={`flex-1 ${task.completed ? 'line-through text-muted-foreground' : ''}`}
+                    className={`flex-1 text-base ${task.completed ? 'line-through text-muted-foreground' : ''}`} {/* Increased text size */}
                   >
                     {task.text}
                   </span>

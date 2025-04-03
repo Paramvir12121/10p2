@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Fix overflow issues properly */
+html, body {
+  overflow-x: hidden;
+  /* Remove the fixed height that causes scrollbar */
+  position: relative; 
+  width: 100%;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

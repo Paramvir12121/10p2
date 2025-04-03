@@ -13,11 +13,11 @@ const SessionControl = ({
   return (
     <div className="w-full flex flex-col md:flex-row justify-between items-center gap-1 mt-1 bg-gradient-to-r from-slate-50/80 to-slate-100/80 dark:from-slate-900/80 dark:to-slate-800/80 p-1.5 rounded-sm border border-slate-200 dark:border-slate-800">
       <div className="flex-grow text-center md:text-left">
-        <h3 className="text-[10px] font-medium flex items-center justify-center md:justify-start gap-1 text-slate-700 dark:text-slate-300">
+        <h3 className="text-[12px] font-medium flex items-center justify-center md:justify-start gap-1 text-slate-700 dark:text-slate-300">
           <Timer className="h-2.5 w-2.5 text-primary/70" /> Session Info
         </h3>
         
-        <div className="text-[9px] text-slate-500 mt-0.5">
+        <div className="text-[11px] text-slate-500 mt-0.5">
           <div className="flex flex-wrap gap-1 justify-center md:justify-start">
             {workTime > 0 && (
               <span className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded-sm inline-flex items-center">
@@ -39,7 +39,7 @@ const SessionControl = ({
         <Button 
           variant="secondary" 
           onClick={onSessionEnd} 
-          className="flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 h-5 rounded-sm"
+          className="flex items-center gap-0.5 text-[11px] px-1.5 py-0.5 h-5 rounded-sm"
           size="sm"
         >
           End Session

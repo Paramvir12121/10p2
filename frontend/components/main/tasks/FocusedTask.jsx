@@ -10,14 +10,14 @@ export function FocusedTask({ focusTask, toggleTaskCompletion }) {
     return (
       <Card className="shadow-md overflow-hidden">
         <CardHeader className="pb-2 bg-primary/5 card-header">
-          <CardTitle className="text-lg flex items-center gap-2">
+          <CardTitle className="text-xl flex items-center gap-2"> {/* Increased from text-lg */}
             <Target className="h-5 w-5" /> Current Focus
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="flex flex-col items-center justify-center min-h-32 text-center text-muted-foreground">
             <Target className="h-12 w-12 mb-3 opacity-40" />
-            <p>No task selected</p>
+            <p className="text-base">No task selected</p> {/* Increased text size */}
             <p className="text-sm mt-1">Select a task from your list to focus on it</p>
           </div>
         </CardContent>
@@ -28,7 +28,7 @@ export function FocusedTask({ focusTask, toggleTaskCompletion }) {
   return (
     <Card className={`shadow-md overflow-hidden ${focusTask.completed ? 'opacity-90' : ''}`}>
       <CardHeader className="pb-2 bg-primary/5 card-header">
-        <CardTitle className="text-lg flex items-center gap-2">
+        <CardTitle className="text-xl flex items-center gap-2"> {/* Increased from text-lg */}
           <Target className="h-5 w-5" /> Current Focus
         </CardTitle>
       </CardHeader>
@@ -36,7 +36,7 @@ export function FocusedTask({ focusTask, toggleTaskCompletion }) {
         <div className="flex flex-col">
           <div className="flex items-start mb-4">
             <div className="flex-1 mr-4">
-              <h3 className={`font-medium text-lg ${focusTask.completed ? 'line-through opacity-70' : ''}`}>
+              <h3 className={`font-medium text-xl ${focusTask.completed ? 'line-through opacity-70' : ''}`}> {/* Increased from text-lg */}
                 {focusTask.text}
               </h3>
             </div>
@@ -45,7 +45,7 @@ export function FocusedTask({ focusTask, toggleTaskCompletion }) {
           <div className="flex justify-between items-center mt-2">
             <Button 
               variant={focusTask.completed ? "outline" : "default"} 
-              className="flex-1 mr-2"
+              className="flex-1 mr-2 text-base" {/* Increased text size */}
               onClick={() => toggleTaskCompletion(focusTask.id)}
             >
               {focusTask.completed ? (

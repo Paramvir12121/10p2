@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -217,18 +217,18 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
     });
   };
 
-  // Custom card header component
-  const CardHeader = ({ title, icon, collapsed, toggleCollapse }) => (
+  // Memoized card header component to prevent unnecessary re-renders
+  const CardHeader = memo(({ title, icon, collapsed, toggleCollapse }) => (
     <div 
       className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-t-md cursor-grab card-header"
-      onClick={toggleCollapse}
+      // onClick={toggleCollapse}
     >
-      <div className="flex items-center gap-1 text-[11px] font-medium">
+      <div className="flex items-center gap-1 text-[13px] font-medium">
         {icon && <span className="text-primary/70">{icon}</span>}
         {title}
       </div>
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="sm" className="w-5 h-5 p-0">
+        <Button variant="ghost" size="sm" className="w-5 h-5 p-0" onClick={toggleCollapse}>
           {collapsed ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
           <span className="sr-only">Toggle</span>
         </Button>
@@ -238,7 +238,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
         </div>
       </div>
     </div>
-  );
+  ));
 
   return (
     <div className="flex flex-col gap-2 max-w-sm mx-auto w-75 md:w-80">
@@ -262,7 +262,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                     strokeWidth={5}
                     styles={buildStyles({
                       strokeLinecap: 'round',
-                      textSize: '12px', // Slightly larger text
+                      textSize: '18px', // Slightly larger text
                       fontWeight: 'bold',
                       pathColor: workRunning ? `rgba(99, 102, 241, 1)` : '#6366f1',
                       textColor: workRunning ? '#6366f1' : '#64748b',
@@ -273,7 +273,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col gap-1 mb-1">
-                    <div className="flex justify-between text-[11px] font-medium">
+                    <div className="flex justify-between text-[13px] font-medium">
                       <span className="text-slate-500">Session: {Math.floor(workTime / 60)}m {workTime % 60}s</span>
                       <span className="text-indigo-600/90 dark:text-indigo-400">Break: {Math.floor(earnedBreakTime / 60)}m</span>
                     </div>
@@ -283,7 +283,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="destructive" 
                           size="sm" 
-                          className="h-6 text-[11px] px-2 flex-1 rounded-sm"
+                          className="h-6 text-[13px] px-2 flex-1 rounded-sm"
                           onClick={handleWorkStop}
                         >
                           <Pause className="h-3 w-3 mr-1" /> Pause
@@ -292,7 +292,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="default" 
                           size="sm" 
-                          className="bg-indigo-600 h-6 text-[11px] px-2 flex-1 rounded-sm"
+                          className="bg-indigo-600 h-6 text-[13px] px-2 flex-1 rounded-sm"
                           onClick={handleWorkStart}
                         >
                           <Play className="h-3 w-3 mr-1" /> Start
@@ -334,7 +334,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                     counterClockwise
                     styles={buildStyles({
                       strokeLinecap: 'round',
-                      textSize: '12px', // Slightly larger text
+                      textSize: '18px', // Slightly larger text
                       fontWeight: 'bold',
                       pathColor: breakTimerRunning ? `rgba(34, 197, 94, 1)` : '#22c55e',
                       textColor: breakTimerRunning ? '#22c55e' : '#64748b',
@@ -345,7 +345,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col gap-1 mb-1">
-                    <div className="flex justify-between text-[11px] font-medium">
+                    <div className="flex justify-between text-[13px] font-medium">
                       <span className="text-slate-500">Available: {Math.floor(earnedBreakTime / 60)}m</span>
                       {breakTimerRunning && (
                         <span className="text-green-600/90 dark:text-green-400">Left: {Math.floor(breakTime / 60)}m {breakTime % 60}s</span>
@@ -357,7 +357,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="destructive" 
                           size="sm" 
-                          className="h-6 text-[11px] px-2 flex-1 rounded-sm" 
+                          className="h-6 text-[13px] px-2 flex-1 rounded-sm" 
                           onClick={handleBreakStop}
                         >
                           <Pause className="h-3 w-3 mr-1" /> Pause
@@ -366,7 +366,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="default" 
                           size="sm" 
-                          className="bg-green-600 h-6 text-[11px] px-2 flex-1 rounded-sm"
+                          className="bg-green-600 h-6 text-[13px] px-2 flex-1 rounded-sm"
                           onClick={handleBreakStart}
                           disabled={earnedBreakTime <= 0}
                         >
