@@ -13,12 +13,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getUserOrCreate } from "@/app/actions";
+import { toast } from 'sonner';
 
 export default function UsernamePrompt() {
   const [username, setUsername] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [hasUsername, setHasUsername] = useState(true); // Default to true to prevent flash
   const [isLoading, setIsLoading] = useState(false);
+  const [dbError, setDbError] = useState(false);
 
   // Only run on client-side to avoid hydration issues
   useEffect(() => {
@@ -30,17 +32,31 @@ export default function UsernamePrompt() {
   const handleSaveUsername = async () => {
     if (username.trim()) {
       setIsLoading(true);
+      setDbError(false);
+      
       try {
-        // Get or create user in database
+        // First save to localStorage to ensure UI works even if DB fails
+        localStorage.setItem('username', username.trim());
+        
+        // Then try to save to database
         const userData = await getUserOrCreate(username.trim());
         
-        // Save both username and userId to localStorage
-        localStorage.setItem('username', username.trim());
-        localStorage.setItem('userId', userData.id.toString());
+        // If successful, also store user ID
+        if (userData && userData.id) {
+          localStorage.setItem('userId', userData.id.toString());
+          console.log('User saved successfully:', userData);
+          toast.success(`Welcome, ${username}!`);
+        }
         
         setHasUsername(true);
       } catch (error) {
         console.error('Error saving username to database:', error);
+        setDbError(true);
+        
+        // Show error but don't prevent app usage since we already saved to localStorage
+        toast.error('Database connection issue detected. Your username was saved locally.', {
+          description: "You can continue using the app, but some features may be limited."
+        });
       } finally {
         setIsLoading(false);
       }
@@ -87,6 +103,12 @@ export default function UsernamePrompt() {
               }}
             />
           </div>
+          
+          {dbError && (
+            <div className="col-span-4 text-amber-600 text-xs">
+              Warning: Database connection issue detected. Your username will only be saved locally.
+            </div>
+          )}
         </div>
 
         <AlertDialogFooter>

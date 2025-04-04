@@ -30,18 +30,34 @@ export async function getUserOrCreate(username) {
       throw new Error('Valid username required');
     }
     
-    // Use the TaskDb.getOrCreateUser function that already handles checking for existing users
-    const user = await TaskDb.getOrCreateUser(username.trim());
-    
-    // Return the user data with id and username
-    return {
-      id: user.id,
-      username: user.username,
-      createdAt: user.created_at
-    };
+    // Use a direct database connection first to check if the database is accessible
+    try {
+      console.log('Testing database connection...');
+      const db = await getDb();
+      
+      // Test query to ensure connection works
+      await db.get('SELECT 1 as test');
+      console.log('Database connection test successful');
+      
+      // Database connection works, proceed with the actual operation
+      console.log('Creating or getting user:', username.trim());
+      const user = await TaskDb.getOrCreateUser(username.trim());
+      console.log('User retrieved/created:', user);
+      
+      // Return the user data with id and username
+      return {
+        id: user.id,
+        username: user.username,
+        createdAt: user.created_at
+      };
+    } catch (dbError) {
+      console.error('Database connection error:', dbError);
+      throw new Error(`Database connection failed: ${dbError.message}`);
+    }
   } catch (error) {
-    console.error('Error getting/creating user:', error);
-    throw new Error('Failed to get or create user');
+    console.error('Error in getUserOrCreate:', error);
+    // Don't return a fallback user - let the component handle the error
+    throw error;
   }
 }
 

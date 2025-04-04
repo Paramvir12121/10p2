@@ -5,51 +5,86 @@ import path from 'path';
 
 // Ensure db directory exists
 const ensureDbDir = async () => {
-  const dbDir = path.resolve(process.cwd(), 'db');
   try {
-    await fs.access(dbDir);
+    // Use absolute path for better reliability
+    const dbDir = path.resolve(process.cwd(), 'db');
+    console.log('DB directory path:', dbDir);
+    
+    try {
+      await fs.access(dbDir);
+      console.log('DB directory exists');
+    } catch (error) {
+      // Directory doesn't exist, create it
+      console.log('Creating DB directory');
+      await fs.mkdir(dbDir, { recursive: true });
+    }
+    
+    return dbDir;
   } catch (error) {
-    // Directory doesn't exist, create it
-    await fs.mkdir(dbDir, { recursive: true });
+    console.error('Error ensuring DB directory exists:', error);
+    throw error;
   }
 };
 
 // Initialize the database connection
 export async function openDb() {
-  await ensureDbDir();
-  
-  const dbPath = path.resolve(process.cwd(), 'db', 'tasks.sqlite');
-  
-  // Open the database
-  const db = await open({
-    filename: dbPath,
-    driver: sqlite3.Database
-  });
-  
-  // Enable foreign keys
-  await db.exec('PRAGMA foreign_keys = ON;');
-  
-  // Load and execute the schema - FIX: Use correct schema path
-  // When running from project root, schema is in the frontend/db folder
-  let schemaPath = path.resolve(process.cwd(), 'frontend/db/schema.sql');
-  
-  // Check if schema exists at that path
   try {
-    await fs.access(schemaPath);
-  } catch (error) {
-    // If not found, try the alternate path (when running from inside frontend directory)
-    schemaPath = path.resolve(process.cwd(), 'db/schema.sql');
+    const dbDir = await ensureDbDir();
+    const dbPath = path.join(dbDir, 'tasks.sqlite');
+    console.log('DB file path:', dbPath);
+    
+    // Open the database
+    const db = await open({
+      filename: dbPath,
+      driver: sqlite3.Database
+    });
+    
+    console.log('Database connection opened successfully');
+    
+    // Enable foreign keys
+    await db.exec('PRAGMA foreign_keys = ON;');
+    
+    // Load and execute the schema
     try {
-      await fs.access(schemaPath);
-    } catch (error) {
-      throw new Error(`Schema file not found at ${schemaPath} or ${path.resolve(process.cwd(), 'frontend/db/schema.sql')}`);
+      // Try multiple potential schema paths
+      const schemaPaths = [
+        path.join(dbDir, 'schema.sql'),
+        path.resolve(process.cwd(), 'frontend/db/schema.sql'),
+        path.resolve(process.cwd(), 'db/schema.sql')
+      ];
+      
+      let schemaSQL = null;
+      let usedPath = null;
+      
+      // Try each path until we find the schema
+      for (const schemaPath of schemaPaths) {
+        try {
+          console.log('Trying schema path:', schemaPath);
+          schemaSQL = await fs.readFile(schemaPath, 'utf-8');
+          usedPath = schemaPath;
+          console.log('Found schema at:', schemaPath);
+          break;
+        } catch (err) {
+          console.log(`Schema not found at: ${schemaPath}`);
+        }
+      }
+      
+      if (!schemaSQL) {
+        throw new Error(`Schema not found in any of the searched paths: ${schemaPaths.join(', ')}`);
+      }
+      
+      await db.exec(schemaSQL);
+      console.log('Schema executed successfully from:', usedPath);
+    } catch (schemaError) {
+      console.error('Error loading or executing schema:', schemaError);
+      throw schemaError;
     }
+    
+    return db;
+  } catch (error) {
+    console.error('Error opening database:', error);
+    throw error;
   }
-  
-  const schemaSQL = await fs.readFile(schemaPath, 'utf-8');
-  await db.exec(schemaSQL);
-  
-  return db;
 }
 
 // Initialize database singleton
@@ -57,7 +92,12 @@ let dbInstance = null;
 
 export async function getDb() {
   if (!dbInstance) {
-    dbInstance = await openDb();
+    try {
+      dbInstance = await openDb();
+    } catch (error) {
+      console.error('Failed to initialize database:', error);
+      throw error;
+    }
   }
   return dbInstance;
 }
