@@ -29,8 +29,23 @@ export async function openDb() {
   // Enable foreign keys
   await db.exec('PRAGMA foreign_keys = ON;');
   
-  // Load and execute the schema
-  const schemaPath = path.resolve(process.cwd(), 'db', 'schema.sql');
+  // Load and execute the schema - FIX: Use correct schema path
+  // When running from project root, schema is in the frontend/db folder
+  let schemaPath = path.resolve(process.cwd(), 'frontend/db/schema.sql');
+  
+  // Check if schema exists at that path
+  try {
+    await fs.access(schemaPath);
+  } catch (error) {
+    // If not found, try the alternate path (when running from inside frontend directory)
+    schemaPath = path.resolve(process.cwd(), 'db/schema.sql');
+    try {
+      await fs.access(schemaPath);
+    } catch (error) {
+      throw new Error(`Schema file not found at ${schemaPath} or ${path.resolve(process.cwd(), 'frontend/db/schema.sql')}`);
+    }
+  }
+  
   const schemaSQL = await fs.readFile(schemaPath, 'utf-8');
   await db.exec(schemaSQL);
   

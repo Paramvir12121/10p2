@@ -12,11 +12,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { getUserOrCreate } from "@/app/actions";
 
 export default function UsernamePrompt() {
   const [username, setUsername] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [hasUsername, setHasUsername] = useState(true); // Default to true to prevent flash
+  const [isLoading, setIsLoading] = useState(false);
 
   // Only run on client-side to avoid hydration issues
   useEffect(() => {
@@ -25,10 +27,23 @@ export default function UsernamePrompt() {
     setHasUsername(!!savedUsername);
   }, []);
 
-  const handleSaveUsername = () => {
+  const handleSaveUsername = async () => {
     if (username.trim()) {
-      localStorage.setItem('username', username.trim());
-      setHasUsername(true);
+      setIsLoading(true);
+      try {
+        // Get or create user in database
+        const userData = await getUserOrCreate(username.trim());
+        
+        // Save both username and userId to localStorage
+        localStorage.setItem('username', username.trim());
+        localStorage.setItem('userId', userData.id.toString());
+        
+        setHasUsername(true);
+      } catch (error) {
+        console.error('Error saving username to database:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -75,8 +90,11 @@ export default function UsernamePrompt() {
         </div>
 
         <AlertDialogFooter>
-          <Button onClick={handleSaveUsername} disabled={!username.trim()}>
-            Continue
+          <Button 
+            onClick={handleSaveUsername} 
+            disabled={!username.trim() || isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Continue'}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
