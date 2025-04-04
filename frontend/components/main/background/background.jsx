@@ -31,12 +31,12 @@ export function BackgroundProvider({ children }) {
       light: "/backgrounds/lofi-village-day.png",
       dark: "/backgrounds/lofi-village-night.png",
     },
-    {
-      id: "study-desk",
-      name: "Study Desk",
-      light: "/backgrounds/study-desk-day.jpg",
-      dark: "/backgrounds/study-desk-night.jpg",
-    },
+    // {
+    //   id: "study-desk",
+    //   name: "Study Desk",
+    //   light: "/backgrounds/study-desk-day.jpg",
+    //   dark: "/backgrounds/study-desk-night.jpg",
+    // },
     // Add more background sets here in the future
   ];
 
@@ -147,7 +147,7 @@ export default function Background() {
       </AnimatePresence>
       
       {/* Overlay with overflow hidden to prevent any background scrollbar issues backdrop-blur-[2px] */}
-      <div className="absolute inset-0 bg-background/30  dark:bg-background/50 overflow-hidden" />
+      <div className="absolute inset-0 bg-background/30 backdrop-blur-[1px]  dark:bg-background/50 overflow-hidden" />
     </div>
   );
 }

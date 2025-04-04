@@ -15,6 +15,12 @@ export const DashProvider = ({ children }) => {
     const [showWorkTimer, setShowWorkTimer] = useState(true);
     const [showBreakTimer, setShowBreakTimer] = useState(true);
     
+    // Add visibility control for task list
+    const [showTaskList, setShowTaskList] = useState(true);
+    
+    // Add visibility control for main task
+    const [showMainTask, setShowMainTask] = useState(true);
+    
     // Add timer running states to share with components
     const [workTimerRunning, setWorkTimerRunning] = useState(false);
     const [breakTimerRunning, setBreakTimerRunning] = useState(false);
@@ -22,6 +28,8 @@ export const DashProvider = ({ children }) => {
     // Toggle functions for easier control
     const toggleWorkTimer = () => setShowWorkTimer(prev => !prev);
     const toggleBreakTimer = () => setShowBreakTimer(prev => !prev);
+    const toggleTaskList = () => setShowTaskList(prev => !prev);
+    const toggleMainTask = () => setShowMainTask(prev => !prev);
     
     // Toggle both timers together
     const toggleBothTimers = (value) => {
@@ -43,8 +51,14 @@ export const DashProvider = ({ children }) => {
         setShowWorkTimer,
         showBreakTimer,
         setShowBreakTimer,
+        showTaskList,
+        setShowTaskList,
+        showMainTask,
+        setShowMainTask,
         toggleWorkTimer,
         toggleBreakTimer,
+        toggleTaskList,
+        toggleMainTask,
         toggleBothTimers,
         // Add timer running states
         workTimerRunning,

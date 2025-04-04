@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import { DashProvider } from "@/provider/dashContext";
 import { BackgroundProvider } from "@/components/main/background/background.jsx";
 import { DraggableProvider } from "@/provider/draggableContext";
+import UsernamePrompt from '@/components/UsernamePrompt';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <DashProvider>
             <BackgroundProvider>
               <DraggableProvider>
+                <UsernamePrompt />
                 <div className="flex flex-col min-h-screen overflow-hidden">
                   <main className="flex-1 pb-24">
                     {children}

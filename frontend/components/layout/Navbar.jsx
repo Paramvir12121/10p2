@@ -1,119 +1,106 @@
 "use client"
 
-import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
-import { useTheme } from "next-themes"
-import { useDashContext } from "@/provider/dashContext"
-import { useDraggableContext } from "@/provider/draggableContext" // Add this import
+import { useState, useRef, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { useDashContext } from "@/provider/dashContext";
+import { useDraggableContext } from "@/provider/draggableContext";
 import { 
-  Clock, 
-  Home,
-  Target, 
-  Music, 
-  Image, 
-  Settings, 
-  Compass,
-  Sun,
-  Moon,
-  Check,
-  Timer,
-  Coffee,
-  LayoutGrid // Add this icon for reset layout
-} from "lucide-react" // Using lucide-react icons
-import { BackgroundSwitcher } from "@/components/main/background/background"; // Add this import
-import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuCheckboxItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-const springConfig = {
-  duration: 0.3,
-  ease: "easeInOut"
-}
+} from '@/components/ui/dropdown-menu';
+import { 
+  Settings, 
+  Timer, 
+  Clock, 
+  Coffee, 
+  Check, 
+  LayoutGrid, 
+  Image,
+  CheckSquare,
+  ListTodo,
+  Sun,
+  Moon
+} from 'lucide-react';
+import { BackgroundSwitcher } from "@/components/main/background/background";
 
 export default function Navbar({ className, ...props }) {
-  const [activeIndex, setActiveIndex] = React.useState(null)
-  const navRef = React.useRef(null)
-  const [tooltipPosition, setTooltipPosition] = React.useState({ left: 0, width: 0 })
-  const tooltipRef = React.useRef(null)
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
+  const [activeIndex, setActiveIndex] = useState(null);
+  const navRef = useRef(null);
+  const tooltipRef = useRef(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ left: 0 });
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  
   const { 
+    resetAllPositions 
+  } = useDraggableContext();
+  
+  const { 
+    showWorkTimer, 
+    showBreakTimer, 
+    toggleWorkTimer, 
+    toggleBreakTimer, 
+    toggleBothTimers, 
     setOpenTimer,
-    showWorkTimer,
-    showBreakTimer,
-    toggleWorkTimer,
-    toggleBreakTimer,
-    toggleBothTimers
-  } = useDashContext()
-  const { resetAllPositions } = useDraggableContext(); // Add this hook
+    showTaskList,
+    toggleTaskList,
+    showMainTask,
+    toggleMainTask,
+    setOpenTaskList
+  } = useDashContext();
+
+  // Tooltip effect for showing label when hovering over nav items
+  useEffect(() => {
+    if (activeIndex !== null && navRef.current && tooltipRef.current) {
+      const menuItem = navRef.current.children[activeIndex];
+      if (!menuItem) return;
+      
+      const menuRect = navRef.current.getBoundingClientRect();
+      const itemRect = menuItem.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
+      
+      const left = itemRect.left - menuRect.left + (itemRect.width - tooltipRect.width) / 2;
+      setTooltipPosition({
+        left: Math.max(0, Math.min(left, menuRect.width - tooltipRect.width))
+      });
+    }
+  }, [activeIndex]);
+
+  const springConfig = { type: "spring", damping: 20, stiffness: 300 };
   
   // Only show theme toggle after mounting to avoid hydration mismatch
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
-  // Only after mounting do we use the theme-dependent icon logic
-  const ThemeIcon = !mounted ? Sun : theme === 'dark' ? Sun : Moon
-  
+  const ThemeIcon = !mounted ? Sun : theme === 'dark' ? Sun : Moon;
+
+  // Define navigation items with proper icon components
   const navItems = [
-    { icon: Home, label: "Home", path: "/" },
-    { 
-      icon: Clock, 
-      label: "Timer", 
-      dropdown: true,
-      onClick: () => setOpenTimer(prev => !prev) 
-    },
-    { icon: Target, label: "Goals", onClick: () => console.log("Goals clicked") },
-    { icon: Music, label: "Music", onClick: () => console.log("Music clicked") },
-    { 
-      icon: Image, 
-      label: "Background", 
-      dropdown: true, // Change this to true
-    },
-    { icon: Compass, label: "Inspiration", path: "/inspiration" },
-    { icon: ThemeIcon, label: "Toggle Theme", onClick: toggleTheme },
-    { 
-      icon: Settings, 
-      label: "Settings", 
-      dropdown: true, // Change this to true
-    }
-  ]
-
-  React.useEffect(() => {
-    if (activeIndex !== null && navRef.current && tooltipRef.current) {
-      const navItem = navRef.current.children[activeIndex] 
-      const navRect = navRef.current.getBoundingClientRect()
-      const itemRect = navItem.getBoundingClientRect()
-      const tooltipRect = tooltipRef.current.getBoundingClientRect()
-    
-      const left = itemRect.left - navRect.left + (itemRect.width - tooltipRect.width) / 2
-   
-      setTooltipPosition({
-        left: Math.max(0, Math.min(left, navRect.width - tooltipRect.width)),
-        width: tooltipRect.width
-      })
-    }
-  }, [activeIndex])
+    { label: "Timer", icon: Timer, dropdown: true },
+    { label: "Tasks", icon: CheckSquare, dropdown: true },
+    { label: "Settings", icon: Settings, dropdown: true },
+    { label: "Toggle Theme", icon: ThemeIcon, onClick: toggleTheme },
+  ];
 
   const handleItemInteraction = (item, event) => {
     if (item.onClick) {
-      event.preventDefault()
-      item.onClick()
+      event.preventDefault();
+      item.onClick();
     }
-  }
+  };
 
   return (
     <nav className={cn("fixed bottom-6 left-1/2 -translate-x-1/2 z-50", className)} {...props}>
@@ -161,62 +148,7 @@ export default function Navbar({ className, ...props }) {
         >
           {navItems.map((item, index) => {
             if (item.dropdown) {
-              if (item.icon === Image) {
-                // Special case for Background dropdown
-                return (
-                  <DropdownMenu key={index}>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
-                        onMouseEnter={() => setActiveIndex(index)}
-                        onMouseLeave={() => setActiveIndex(null)}
-                      >
-                        <div className="flex justify-center items-center">
-                          <div className="w-5 h-5 flex justify-center items-center">
-                            <item.icon className="w-full h-full" />
-                          </div>
-                        </div>
-                        <span className="sr-only">{item.label}</span>
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="center" className="w-48">
-                      <BackgroundSwitcher />
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                );
-              } else if (item.icon === Settings) {
-                // Special case for Settings dropdown
-                return (
-                  <DropdownMenu key={index}>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
-                        onMouseEnter={() => setActiveIndex(index)}
-                        onMouseLeave={() => setActiveIndex(null)}
-                      >
-                        <div className="flex justify-center items-center">
-                          <div className="w-5 h-5 flex justify-center items-center">
-                            <item.icon className="w-full h-full" />
-                          </div>
-                        </div>
-                        <span className="sr-only">{item.label}</span>
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="center" className="w-48">
-                      <DropdownMenuLabel>Settings</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={resetAllPositions}>
-                        <span className="flex items-center">
-                          <LayoutGrid className="mr-2 h-3.5 w-3.5" />
-                          Reset Layout
-                        </span>
-                      </DropdownMenuItem>
-                      {/* Other settings items can go here */}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                );
-              } else {
-                // Handle other dropdown types (like Timer dropdown)
+              if (item.icon === Timer) {
                 return (
                   <DropdownMenu key={index}>
                     <DropdownMenuTrigger asChild>
@@ -274,9 +206,90 @@ export default function Navbar({ className, ...props }) {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 );
+              } else if (item.icon === CheckSquare) {
+                return (
+                  <DropdownMenu key={index}>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onMouseLeave={() => setActiveIndex(null)}
+                      >
+                        <div className="flex justify-center items-center">
+                          <div className="w-5 h-5 flex justify-center items-center">
+                            <item.icon className="w-full h-full" />
+                          </div>
+                        </div>
+                        <span className="sr-only">{item.label}</span>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center" className="w-48">
+                      <DropdownMenuLabel>Task Controls</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuCheckboxItem 
+                        checked={showMainTask}
+                        onCheckedChange={toggleMainTask}
+                      >
+                        <span className="flex items-center">
+                          <CheckSquare className="mr-2 h-3.5 w-3.5" />
+                          Show Main Task
+                        </span>
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem 
+                        checked={showTaskList}
+                        onCheckedChange={toggleTaskList}
+                      >
+                        <span className="flex items-center">
+                          <ListTodo className="mr-2 h-3.5 w-3.5" />
+                          Show Task List
+                        </span>
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setOpenTaskList(true)}>
+                        <span className="flex items-center">
+                          <Check className="mr-2 h-3.5 w-3.5" />
+                          Open Task List
+                        </span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              } else if (item.icon === Settings) {
+                return (
+                  <DropdownMenu key={index}>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="w-10 h-10 rounded-full flex justify-center items-center hover:bg-muted/80 transition-colors"
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onMouseLeave={() => setActiveIndex(null)}
+                      >
+                        <div className="flex justify-center items-center">
+                          <div className="w-5 h-5 flex justify-center items-center">
+                            <item.icon className="w-full h-full" />
+                          </div>
+                        </div>
+                        <span className="sr-only">{item.label}</span>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center" className="w-48">
+                      <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={resetAllPositions}>
+                        <span className="flex items-center">
+                          <LayoutGrid className="mr-2 h-3.5 w-3.5" />
+                          Reset Layout
+                        </span>
+                      </DropdownMenuItem>
+                      {/* Background settings */}
+                      <DropdownMenuSeparator />
+                      <BackgroundSwitcher />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
               }
             }
 
+            // For non-dropdown items like theme toggle
             const NavElement = item.path ? Link : 'button';
             const elementProps = item.path 
               ? { href: item.path } 

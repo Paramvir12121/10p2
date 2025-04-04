@@ -18,7 +18,7 @@ import { SortableTask } from './SortableTask';
 import { createPortal } from 'react-dom';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Undo2, KeyRound } from "lucide-react";
+import { Undo2, KeyRound, Eye, EyeOff } from "lucide-react";
 
 // Keyboard shortcuts help tooltip
 const KeyboardShortcutHelp = ({ open, onClose }) => {
@@ -96,8 +96,14 @@ const AllTasks = ({ initialTasks = [] }) => {
   const [animatingTaskId, setAnimatingTaskId] = useState(null);
   const [animationDetails, setAnimationDetails] = useState(null);
   
-  // Get timer state from context
-  const { workTimerRunning } = useDashContext();
+  // Get task visibility state and timer state from context
+  const { 
+    workTimerRunning, 
+    showTaskList, 
+    toggleTaskList, 
+    showMainTask, 
+    toggleMainTask 
+  } = useDashContext();
   
   // Global keyboard shortcuts
   useEffect(() => {
@@ -232,8 +238,36 @@ const AllTasks = ({ initialTasks = [] }) => {
   
   return (
     <div className="relative">
-      {/* Keyboard shortcuts button */}
+      {/* Toggle visibility and keyboard shortcuts buttons */}
       <div className="absolute -top-6 right-0 flex items-center">
+        {/* <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0 mr-1"
+          onClick={toggleMainTask}
+          title={showMainTask ? "Hide main task" : "Show main task"}
+        >
+          {showMainTask ? (
+            <EyeOff className="h-3.5 w-3.5" />
+          ) : (
+            <Eye className="h-3.5 w-3.5" />
+          )}
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0 mr-1"
+          onClick={toggleTaskList}
+          title={showTaskList ? "Hide task list" : "Show task list"}
+        >
+          {showTaskList ? (
+            <EyeOff className="h-3.5 w-3.5" />
+          ) : (
+            <Eye className="h-3.5 w-3.5" />
+          )}
+        </Button>
+        
         <Button
           variant="ghost"
           size="sm"
@@ -242,7 +276,7 @@ const AllTasks = ({ initialTasks = [] }) => {
           title="Undo last action (Ctrl+Z)"
         >
           <Undo2 className="h-3.5 w-3.5" />
-        </Button>
+        </Button> */}
         
         {/* <Button
           variant="ghost"
@@ -256,10 +290,10 @@ const AllTasks = ({ initialTasks = [] }) => {
       </div>
       
       {/* Keyboard shortcuts help */}
-      <KeyboardShortcutHelp 
+      {/* <KeyboardShortcutHelp 
         open={showShortcuts} 
         onClose={() => setShowShortcuts(false)} 
-      />
+      /> */}
       
       <DndContext 
         sensors={sensors}
@@ -269,23 +303,30 @@ const AllTasks = ({ initialTasks = [] }) => {
         dropAnimation={dropAnimation}
       >
         <div className="flex flex-col space-y-6 w-90">
-          <div ref={focusAreaRef}>
-            <MainTask 
-              focusTask={focusTask}
-              onComplete={toggleTaskCompletion}
-              isReceivingTask={animatingTaskId !== null}
+          {/* Conditionally render MainTask based on showMainTask state */}
+          {showMainTask && (
+            <div ref={focusAreaRef}>
+              <MainTask 
+                focusTask={focusTask}
+                onComplete={toggleTaskCompletion}
+                isReceivingTask={animatingTaskId !== null}
+              />
+            </div>
+          )}
+          
+          {/* Conditionally render Tasks based on showTaskList state */}
+          {showTaskList && (
+            <Tasks 
+              tasks={tasks}
+              focusTaskId={focusTaskId}
+              onAddTask={addTask}
+              onToggleTask={toggleTaskCompletion}
+              onDeleteTask={deleteTask}
+              onBatchAction={batchAction}
+              registerTaskRef={registerTaskRef}
+              animatingTaskId={animatingTaskId}
             />
-          </div>
-          <Tasks 
-            tasks={tasks}
-            focusTaskId={focusTaskId}
-            onAddTask={addTask}
-            onToggleTask={toggleTaskCompletion}
-            onDeleteTask={deleteTask}
-            onBatchAction={batchAction}
-            registerTaskRef={registerTaskRef}
-            animatingTaskId={animatingTaskId}
-          />
+          )}
         </div>
         
         {/* Fixed drag overlay with proper sizing */}
