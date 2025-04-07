@@ -61,6 +61,7 @@ export async function getUserOrCreate(username) {
   }
 }
 
+console.log("Database file location:", databaseFilePath);
 // Get all tasks for a user
 export async function getUserTasks(userId) {
   try {
