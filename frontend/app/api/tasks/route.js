@@ -1,56 +1,27 @@
-import { TaskDb } from '@/db/taskDb';
+import { getDb } from '@/db/db.js';
 
-// Get tasks for a user
-export async function GET(request) {
+export async function GET() {
   try {
-    // Get userId from query params
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    // Get database connection
+    const db = await getDb();
     
-    if (!userId) {
-      return new Response(JSON.stringify({ error: 'User ID is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    // Execute a test query to get PostgreSQL version
+    const result = await db.query('SELECT version() as version');
     
-    const tasks = await TaskDb.getTasks(userId);
-    
-    return new Response(JSON.stringify(tasks), {
+    return new Response(JSON.stringify({ 
+      success: true,
+      message: "Database is working",
+      version: result.rows[0].version
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
-    console.error('Error getting tasks:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-}
-
-// Create a new task
-export async function POST(request) {
-  try {
-    const body = await request.json();
-    const { userId, ...taskData } = body;
-    
-    if (!userId || !taskData.text) {
-      return new Response(JSON.stringify({ error: 'User ID and task text are required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    
-    const task = await TaskDb.createTask(userId, taskData);
-    
-    return new Response(JSON.stringify(task), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  } catch (error) {
-    console.error('Error creating task:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('Database error:', error);
+    return new Response(JSON.stringify({ 
+      success: false,
+      error: error.message 
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });

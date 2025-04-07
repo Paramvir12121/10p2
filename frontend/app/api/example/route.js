@@ -5,13 +5,13 @@ export async function GET() {
     // Get database connection
     const db = await getDb();
     
-    // Execute a test query
-    const result = await db.all('SELECT sqlite_version() as version');
+    // Execute a test query to get PostgreSQL version
+    const result = await db.query('SELECT version() as version');
     
     return new Response(JSON.stringify({ 
       success: true,
       message: "Database is working",
-      version: result[0].version
+      version: result.rows[0].version
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
