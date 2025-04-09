@@ -4,15 +4,15 @@ const nextConfig = {
   experimental: {
     serverActions: {
       allowedOrigins: [
-        'localhost:3000',
-        'localhost',
-        'https://orange-space-potato-5vrwr9jq59xfv6jw-3000.app.github.dev/',
-        '127.0.0.1:3000',
-        '127.0.0.1',
-        /\.app\.github\.dev$/,  // Allow GitHub Codespaces URLs
-        /\.github\.dev$/,       // More general GitHub Codespaces pattern
-        /.*\.app\.github\.dev$/,  // Any subdomain of app.github.dev
-        /.*\.preview\.app\.github\.dev$/, // Preview environments
+       'localhost:3000',
+      'localhost',
+      'https://orange-space-potato-5vrwr9jq59xfv6jw-3000.app.github.dev/',
+      '127.0.0.1:3000',
+      '127.0.0.1',
+      '.app.github.dev',  // Allow GitHub Codespaces URLs
+      '.github.dev',      // More general GitHub Codespaces pattern
+      '*.app.github.dev', // Any subdomain of app.github.dev
+      '*.preview.app.github.dev', // Preview environments
       ],
     },
   },
