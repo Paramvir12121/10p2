@@ -65,11 +65,11 @@ export function SortableTask({
     if (!completed && !isDragOverlay) {
       setIsCompleting(true);
       setTimeout(() => {
-        onToggle();
+        onToggle(); // Call only here for this condition
         setIsCompleting(false);
       }, 400); 
-    } else {
-      onToggle();
+    } else if (!isDragOverlay) {
+      onToggle(); // Call here for completed tasks or drag overlays
     }
   };
 

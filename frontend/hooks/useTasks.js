@@ -164,7 +164,9 @@ export function useTasks(initialTasks = []) {
         
         // If the task is now completed, we'll add it back to the list later
         if (updatedTask.completed) {
+          // Add unique ID to prevent duplicate toasts
           toast.success('Task completed!', {
+            id: `task-complete-${taskId}`,
             description: updatedTask.text
           });
           
@@ -208,6 +210,7 @@ export function useTasks(initialTasks = []) {
     const completedTask = tasks.find(task => task.id === taskId);
     if (completedTask && !completedTask.completed) {
       toast.success('Task completed!', {
+        id: `task-complete-${taskId}`,
         description: completedTask.text
       });
     }
