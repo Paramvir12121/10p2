@@ -1,5 +1,6 @@
 "use client"
 
+import Logout from '@/components/auth/logout';
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -27,7 +28,8 @@ import {
   CheckSquare,
   ListTodo,
   Sun,
-  Moon
+  Moon,
+  LogOut,
 } from 'lucide-react';
 import { BackgroundSwitcher } from "@/components/main/background/background";
 
@@ -56,6 +58,7 @@ export default function Navbar({ className, ...props }) {
     toggleMainTask,
     setOpenTaskList
   } = useDashContext();
+  const performLogout = Logout();
 
   // Tooltip effect for showing label when hovering over nav items
   useEffect(() => {
@@ -93,6 +96,7 @@ export default function Navbar({ className, ...props }) {
     { label: "Tasks", icon: CheckSquare, dropdown: true },
     { label: "Settings", icon: Settings, dropdown: true },
     { label: "Toggle Theme", icon: ThemeIcon, onClick: toggleTheme },
+    { label: "Logout", icon: LogOut, onClick: () => performLogout() },
   ];
 
   const handleItemInteraction = (item, event) => {
