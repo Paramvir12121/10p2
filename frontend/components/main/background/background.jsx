@@ -31,12 +31,12 @@ export function BackgroundProvider({ children }) {
       light: "/backgrounds/lofi-village-day.png",
       dark: "/backgrounds/lofi-village-night.png",
     },
-    // {
-    //   id: "study-desk",
-    //   name: "Study Desk",
-    //   light: "/backgrounds/study-desk-day.jpg",
-    //   dark: "/backgrounds/study-desk-night.jpg",
-    // },
+    {
+      id: "study-desk",
+      name: "Study Desk",
+      light: "/backgrounds/Desk-day.png",
+      dark: "/backgrounds/Desk-night.png",
+    },
     // Add more background sets here in the future
   ];
 
