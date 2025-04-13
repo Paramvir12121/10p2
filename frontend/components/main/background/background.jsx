@@ -37,6 +37,12 @@ export function BackgroundProvider({ children }) {
       light: "/backgrounds/Desk-day.png",
       dark: "/backgrounds/Desk-night.png",
     },
+    {
+      id: "Cafe",
+      name: "Cafe",
+      light: "/backgrounds/cafe-day.png",
+      dark: "/backgrounds/cafe-night.png",
+    },
     // Add more background sets here in the future
   ];
 
