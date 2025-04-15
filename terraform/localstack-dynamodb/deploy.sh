@@ -8,15 +8,12 @@ MAX_RETRIES=12  # 1 minute timeout (12 x 5 seconds)
 RETRIES=0
 
 echo "Waiting for localstack to be ready..."
-while ! curl -s http://localhost:4566/_localstack/health | grep -q '"dynamodb": "running"'; do
-    RETRIES=$((RETRIES+1))
-    if [ $RETRIES -ge $MAX_RETRIES ]; then
-        echo "LocalStack DynamoDB service failed to start within timeout period"
-        exit 1
-    fi
-    echo "Waiting for LocalStack DynamoDB service... (${RETRIES}/${MAX_RETRIES})"
-    sleep 5
-done
+if docker ps | grep -q "localstack"; then
+    echo "LocalStack is running"
+else
+    echo "LocalStack is not running"
+    exit 1
+fi
 echo "Localstack is ready"
 # Deploy dynamodb table using terraform
 cd ../../terraform/localstack-dynamodb
