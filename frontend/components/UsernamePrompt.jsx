@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { getUserOrCreate } from "@/app/actions";
+import {createNewUser} from '@/app/actions' 
 import { toast } from 'sonner';
 
 export default function UsernamePrompt() {
