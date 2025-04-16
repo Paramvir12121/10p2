@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {createNewUser} from '@/app/actions' 
+import {createNewUser, checkUserExists} from '@/app/actions' 
 import { toast } from 'sonner';
 
 export default function UsernamePrompt() {
@@ -38,15 +38,35 @@ export default function UsernamePrompt() {
         // First save to localStorage to ensure UI works even if DB fails
         localStorage.setItem('username', username.trim());
         
-        // Then try to save to database
-        const userData = await getUserOrCreate(username.trim());
-        
-        // If successful, also store user ID
-        if (userData && userData.id) {
-          localStorage.setItem('userId', userData.id.toString());
-          console.log('User saved successfully:', userData);
-          toast.success(`Welcome, ${username}!`);
+
+        const userExists = await checkUserExists(username.trim())
+
+        let userData;
+
+        if (userExists.exists){
+          userData = {
+            id: userExistsResult.userId,
+            username: username.trim()
+          };
+          toast.success(`Welcome back, ${username}!`);
+
+        }else {
+          const newUserResult = await createNewUser(username.trim())
+
+          if (!newUserResult.success) {
+            throw new Error(newUserResult.error || 'Failed to create user');
+
+            userData = newUserResult.userData;
+            toast.success(`Welcome, ${username}!`);
+          }
         }
+        
+        
+       // Save user ID to localStorage
+          if (userData && userData.userId) {
+            localStorage.setItem('userId', userData.userId);
+            console.log('User data saved successfully:', userData);
+          }
         
         setHasUsername(true);
       } catch (error) {

@@ -1,17 +1,16 @@
 // actions.js
 'use client';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb"
+import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand } from "@aws-sdk/lib-dynamodb"
 
 
 const dbClient = new DynamoDBClient({
   credentials: {
-    accessKeyId: process.env.DYNAMODB_ACCESS_KEY_ID,
-    secretAccessKey: process.env.DYNAMODB_SECRET_ACCESS_KEY,
+    accessKeyId: 'local',
+    secretAccessKey: 'local',
   },
-  region: process.env.DYNAMODB_REGION || 'us-east-1',
-  // This is the key addition for connecting to local DynamoDB
-  endpoint: process.env.DYNAMODB_ENDPOINT || undefined
+  region: 'us-east-1',
+  endpoint: 'http://localhost:8000'
 })
 const docClient = DynamoDBDocumentClient.from(dbClient)
 
@@ -115,7 +114,40 @@ export const createNewUser = async (username) => {
 
 }
 
-export const checkUser = (username) => {
+export const checkUserExists = async (username) => {
+  if (!username || typeof username !== 'string' || username.trim() === '') {
+    return { exists: false, error: 'Valid username is required' };
+  }
+   try {
+    // Query the username lookup entry
+    const params = {
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      KeyConditionExpression: 'PK = :pk',
+      ExpressionAttributeValues: {
+        ':pk': `USERNAME#${username.toLowerCase()}`
+      }
+    };
+    
+    const result = await docClient.send(new QueryCommand(params));
+    
+    if (result.Items && result.Items.length > 0) {
+      // User exists, return true along with the userId for reference
+      return { 
+        exists: true, 
+        userId: result.Items[0].Data.userId 
+      };
+    }
+    
+    // Username doesn't exist
+    return { exists: false };
+  } catch (error) {
+    console.error('Error checking if user exists:', error);
+    return { 
+      exists: false, 
+      error: `Error checking username: ${error.message}` 
+    };
+  }
+  
 
 }
 
