@@ -25,6 +25,8 @@ export function SortableTask({
   const [isNew, setIsNew] = useState(true);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
+  // Track client-side initialization to prevent hydration mismatches
+  const [isMounted, setIsMounted] = useState(false);
   
   const {
     attributes,
@@ -39,11 +41,16 @@ export function SortableTask({
       duration: 250,
       easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
     },
-    disabled: completed // Disable dragging for completed tasks
+    disabled: completed || !isMounted // Disable during server rendering and for completed tasks
   });
 
   // Use a ref to combine sortable ref with our registration ref
   const ref = useRef(null);
+
+  // Track client-side mounting to prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Register the element for animation tracking
   useEffect(() => {
@@ -148,12 +155,16 @@ export function SortableTask({
     );
   };
 
+  // Conditionally apply drag-and-drop attributes only on the client side
+  const safeAttributes = isMounted ? attributes : {};
+  const safeListeners = isMounted && !completed ? listeners : {};
+
   return (
     <div
       ref={setRefs}
       style={style}
       className={taskClassNames}
-      {...(!isDragOverlay ? attributes : {})}
+      {...(!isDragOverlay ? safeAttributes : {})}
       onClick={(e) => {
         // Don't trigger selection when clicking specific controls
         const isActionClick = e.target.closest('button') || 
@@ -199,7 +210,7 @@ export function SortableTask({
           
           {!isDragOverlay && !completed && (
             <div 
-              {...listeners}
+              {...safeListeners}
               className="flex-none w-3.5 h-3.5 text-slate-400 cursor-grab active:cursor-grabbing hover:text-primary/70 transition-colors task-action"
               title="Drag to reorder or set as focus"
             >

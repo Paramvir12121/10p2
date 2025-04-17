@@ -45,7 +45,7 @@ export default function UsernamePrompt() {
 
         if (userExists.exists){
           userData = {
-            id: userExistsResult.userId,
+            id: userExists.userId,
             username: username.trim()
           };
           toast.success(`Welcome back, ${username}!`);
@@ -54,7 +54,7 @@ export default function UsernamePrompt() {
           const newUserResult = await createNewUser(username.trim())
 
           if (!newUserResult.success) {
-            throw new Error(newUserResult.error || 'Failed to create user');
+            throw Error(newUserResult.error || 'Failed to create user');
 
             userData = newUserResult.userData;
             toast.success(`Welcome, ${username}!`);

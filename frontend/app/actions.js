@@ -1,5 +1,5 @@
 // actions.js
-'use client';
+'use server'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand } from "@aws-sdk/lib-dynamodb"
 
@@ -10,7 +10,7 @@ const dbClient = new DynamoDBClient({
     secretAccessKey: 'local',
   },
   region: 'us-east-1',
-  endpoint: 'http://localhost:8000'
+  endpoint: 'https://orange-space-potato-5vrwr9jq59xfv6jw-8000.app.github.dev'
 })
 const docClient = DynamoDBDocumentClient.from(dbClient)
 
@@ -148,7 +148,6 @@ export const checkUserExists = async (username) => {
     };
   }
   
-
 }
 
 
