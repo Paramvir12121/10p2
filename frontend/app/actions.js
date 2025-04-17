@@ -6,11 +6,11 @@ import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCom
 
 const dbClient = new DynamoDBClient({
   credentials: {
-    accessKeyId: 'local',
-    secretAccessKey: 'local',
+    accessKeyId: process.env.DYNAMODB_ACCESS_KEY_ID,
+    secretAccessKey: process.env.DYNAMODB_SECRET_ACCESS_KEY,
   },
-  region: 'us-east-1',
-  endpoint: 'https://orange-space-potato-5vrwr9jq59xfv6jw-8000.app.github.dev'
+  region: process.env.DYNAMODB_REGION,
+  endpoint: process.env.DYNAMODB_ENDPOINT
 })
 const docClient = DynamoDBDocumentClient.from(dbClient)
 
