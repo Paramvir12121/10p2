@@ -1,0 +1,19 @@
+FROM node:19-alpine
+
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Set environment variables (these can be overridden at runtime)
+ENV PORT=3000
+
+# Expose the port
+EXPOSE 3000
+
+# Start the application with host binding
+CMD ["sh", "-c", "npm run dev -- -H 0.0.0.0"]
