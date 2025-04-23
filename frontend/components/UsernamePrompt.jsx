@@ -37,36 +37,39 @@ export default function UsernamePrompt() {
       try {
         // First save to localStorage to ensure UI works even if DB fails
         localStorage.setItem('username', username.trim());
-        
 
+        
         const userExists = await checkUserExists(username.trim())
 
         let userData;
 
         if (userExists.exists){
           userData = {
-            id: userExists.userId,
+            userId: userExists.userId,  // Fixed property name from id to userId
             username: username.trim()
           };
           toast.success(`Welcome back, ${username}!`);
-
-        }else {
+        } else {
           const newUserResult = await createNewUser(username.trim())
 
           if (!newUserResult.success) {
-            throw Error(newUserResult.error || 'Failed to create user');
+            throw new Error(newUserResult.error || 'Failed to create user');
+          }
 
-            userData = newUserResult.userData;
-            toast.success(`Welcome, ${username}!`);
+          userData = newUserResult.userData;
+          toast.success(`Welcome, ${username}!`);
+          
+          // Check if this was a local-only operation
+          if (newUserResult.localOnly) {
+            setDbError(true);
           }
         }
         
-        
-       // Save user ID to localStorage
-          if (userData && userData.userId) {
-            localStorage.setItem('userId', userData.userId);
-            console.log('User data saved successfully:', userData);
-          }
+        // Save user ID to localStorage
+        if (userData && userData.userId) {
+          localStorage.setItem('userId', userData.userId);
+          console.log('User data saved successfully:', userData);
+        }
         
         setHasUsername(true);
       } catch (error) {

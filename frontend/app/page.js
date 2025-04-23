@@ -14,7 +14,7 @@ export default function Home() {
   ];
 
   // Initialize with safe default positions
-  const [timerPosition, setTimerPosition] = useState({ x: 40, y: 20 });
+  const [timerPosition, setTimerPosition] = useState({ x: 400, y: 200 });
   
   // Update positions after component mounts in browser
   useEffect(() => {
