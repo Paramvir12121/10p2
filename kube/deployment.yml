@@ -66,30 +66,23 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: node:19
-        workingDir: /app
-        command: ["/bin/bash", "-c"]
-        args:
-          - |
-            echo "Installing dependencies..."
-            npm install
-            echo "Starting application..."
-            npm run dev
+        image: frontend:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         env:
+        - name: NODE_ENV
+          value: "development"
+        - name: DYNAMODB_ENDPOINT
+          value: "http://dynamodb-local:8000"
         - name: DYNAMODB_ACCESS_KEY_ID
           value: "local"
         - name: DYNAMODB_SECRET_ACCESS_KEY
           value: "local"
-        - name: DYNAMODB_ENDPOINT
-          value: "http://dynamodb-local:8000"
         - name: DYNAMODB_REGION
           value: "us-east-1"
         - name: DYNAMODB_TABLE_NAME
           value: "FocusAppData"
-        - name: PORT
-          value: "3000"
         resources:
           limits:
             memory: "1Gi"
@@ -97,10 +90,3 @@ spec:
           requests:
             memory: "512Mi"
             cpu: "250m"
-        volumeMounts:
-        - name: frontend-code
-          mountPath: /app
-      volumes:
-      - name: frontend-code
-        hostPath:
-          path: /workspaces/10p2/frontend
