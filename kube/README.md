@@ -1,44 +1,50 @@
-# Kubernetes Deployment
+# Kubernetes Deployment for 10p2
 
-This directory contains the Kubernetes configuration for deploying the application.
+This directory contains Kubernetes manifests for deploying the 10p2 application.
 
-## Structure
+## Overview
 
-- `base/`: Base configurations for all environments
-  - `dynamodb/`: DynamoDB local configurations
-  - `frontend/`: Frontend application configurations
-- `overlays/`: Environment-specific configurations
-  - `dev/`: Development environment
-  - `prod/`: Production environment (when needed)
+The Kubernetes configuration includes:
 
-## Deployment Methods
+- Deployment configuration for the frontend
+- DynamoDB deployment (for development/testing)
+- Service definitions
+- Environment configuration via ConfigMaps and Secrets
+- Kustomize overlays for different environments
 
-### Using kubectl with kustomize
+## Current Status
 
-For development environment:
+- ✅ Basic deployment manifests
+- ✅ Environment configuration with Kustomize
+- ❌ Ingress setup
+- ❌ Persistent volume configuration
+
+## Getting Started with Minikube
+
+### Prerequisites
+
+- Minikube
+- kubectl
+
+### Starting Minikube
 
 ```bash
-# Create namespace
-kubectl create namespace focus-app-dev
-
-# Apply using kustomize
-kubectl apply -k ./overlays/dev
+minikube start
 ```
 
-### Using a CI/CD Pipeline
+### Applying Kubernetes Configuration
 
-For automated deployments:
+For development:
 
-1. Set up a CI/CD pipeline using GitHub Actions, GitLab CI, or similar
-2. Add steps to build container images and push to a registry
-3. Deploy using kustomize to the appropriate environment
+```bash
+kubectl apply -k kube/overlays/dev
+```
 
-## Best Practices
+### Accessing the Application
 
-1. Always use version control for Kubernetes manifests
-2. Use namespaces to isolate environments
-3. Specify resource requests and limits for all containers
-4. Include health checks (readiness and liveness probes)
-5. Use ConfigMaps and Secrets for configuration
-6. Apply proper labels to all resources
-7. Use Kustomize for environment-specific configurations
+```bash
+# Start a tunnel to access the service
+minikube service frontend-service --url
+```
+
+## Directory Structure
