@@ -1,42 +1,69 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: dynamodb-local
-spec:
-  selector:
-    app: dynamodb-local
-  ports:
-    - port: 8000
-      targetPort: 8000
-  type: ClusterIP
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: dynamodb-local
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: dynamodb-local
-  template:
-    metadata:
-      labels:
-        app: dynamodb-local
-    spec:
-      containers:
-      - name: dynamodb-local
-        image: amazon/dynamodb-local:latest
-        args: ["-jar", "DynamoDBLocal.jar", "-inMemory"]
-        ports:
-        - containerPort: 8000
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
+# This file contains Kubernetes configuration for deploying our application.
+# Kubernetes configuration is organized as "resources" separated by "---"
+
+# --- SERVICE DEFINITION ---
+# A Service provides a stable endpoint to access pods (our running containers)
+apiVersion: v1          # The API version for this resource type
+kind: Service           # The type of resource we're defining (a Service)
+metadata:               # Metadata about this resource
+  name: dynamodb-local  # Name of our Service (how other resources will find it)
+  labels:               # Labels help with organization and selection
+    app: dynamodb-local # Label to identify this Service belongs to dynamodb-local app
+spec:                   # Specification for how this Service should behave
+  selector:             # Tells the Service which Pods to direct traffic to
+    app: dynamodb-local # Matches Pods with the same label
+  ports:                # Defines which ports this Service exposes
+    - port: 8000        # Port exposed by the Service
+      targetPort: 8000  # Port on the Pod to route traffic to
+  type: ClusterIP       # Type of Service (ClusterIP = internal to the cluster)
+
+# --- DEPLOYMENT DEFINITION ---
+# A Deployment manages creating and updating Pods (containers)
+---                           # Separator between Kubernetes resources
+apiVersion: apps/v1           # API version for Deployments
+kind: Deployment              # The type of resource (a Deployment)
+metadata:                     # Metadata about this Deployment
+  name: dynamodb-local        # Name of our Deployment
+  labels:                     # Labels for organization and selection
+    app: dynamodb-local       # Label indicating this belongs to dynamodb-local app
+spec:                         # Specification for how this Deployment should behave
+  replicas: 1                 # Number of Pod replicas to maintain (just 1 for local DynamoDB)
+  selector:                   # How the Deployment knows which Pods it manages
+    matchLabels:              # Must match the template's labels below
+      app: dynamodb-local     # Label to match
+  template:                   # Template for creating each Pod
+    metadata:                 # Metadata for the Pods that will be created
+      labels:                 # Labels applied to each Pod
+        app: dynamodb-local   # This must match the selector above
+    spec:                     # Specification for the Pods
+      containers:             # List of containers in the Pod
+      - name: dynamodb-local  # Name of the container
+        image: amazon/dynamodb-local:latest  # Container image to use
+        args:                 # Arguments to pass to the container
+          - "-jar"            # Run the JAR file
+          - "DynamoDBLocal.jar"  # The DynamoDB Local JAR file
+          - "-inMemory"       # Run in memory mode (data will be lost on restart)
+        ports:                # Which ports to expose from the container
+        - containerPort: 8000 # Port the container listens on
+        
+        resources:            # Resource constraints for this container
+          limits:             # Maximum resources the container can use
+            memory: "512Mi"   # Maximum memory (512 mebibytes)
+            cpu: "500m"       # Maximum CPU (500 milliCPU = 0.5 CPU core)
+          requests:           # Resources guaranteed to the container
+            memory: "256Mi"   # Requested memory (256 mebibytes)
+            cpu: "250m"       # Requested CPU (250 milliCPU = 0.25 CPU core)
+        # Health checks help Kubernetes know if our container is working correctly
+        readinessProbe:       # Checks if container is ready to receive traffic
+          tcpSocket:          # Check by connecting to a TCP socket
+            port: 8000        # Port to connect to
+          initialDelaySeconds: 5   # Wait 5 seconds before first check
+          periodSeconds: 10        # Check every 10 seconds
+        livenessProbe:        # Checks if container is alive or needs restart
+          tcpSocket:          # Check by connecting to a TCP socket
+            port: 8000        # Port to connect to
+          initialDelaySeconds: 15  # Wait 15 seconds before first check
+          periodSeconds: 20        # Check every 20 seconds
 ---
 apiVersion: v1
 kind: Service
@@ -48,12 +75,14 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  labels:
+    app: frontend
 spec:
   replicas: 1
   selector:
@@ -66,23 +95,25 @@ spec:
     spec:
       containers:
       - name: frontend
+        # Using the local image you mentioned
         image: frontend:latest
-        imagePullPolicy: IfNotPresent
+        # Tell Kubernetes to never pull the image from a remote registry
+        imagePullPolicy: Never
         ports:
         - containerPort: 3000
         env:
         - name: NODE_ENV
-          value: "development"
+          value: development
         - name: DYNAMODB_ENDPOINT
-          value: "http://dynamodb-local:8000"
+          value: http://dynamodb-local:8000
         - name: DYNAMODB_ACCESS_KEY_ID
-          value: "local"
+          value: local
         - name: DYNAMODB_SECRET_ACCESS_KEY
-          value: "local"
+          value: local
         - name: DYNAMODB_REGION
-          value: "us-east-1"
+          value: us-east-1
         - name: DYNAMODB_TABLE_NAME
-          value: "FocusAppData"
+          value: FocusAppData
         resources:
           limits:
             memory: "1Gi"
