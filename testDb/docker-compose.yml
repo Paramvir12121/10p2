@@ -1,7 +1,11 @@
 services:
-  dynamodb-local:
-    image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb-local
+  mongodb:
+    image: "mongo:latest"
+    container_name: mongodb
+    volumes:
+      - ./data:/data/db
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=example
     ports:
-      - "8000:8000"
-    command: "-jar DynamoDBLocal.jar -inMemory"
+      - "27017:27017"
