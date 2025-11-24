@@ -68,7 +68,6 @@ export default function UsernamePrompt() {
         // Save user ID to localStorage
         if (userData && userData.userId) {
           localStorage.setItem('userId', userData.userId);
-          console.log('User data saved successfully:', userData);
         }
         
         setHasUsername(true);

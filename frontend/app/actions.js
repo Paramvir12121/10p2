@@ -1,8 +1,75 @@
 'use server';
 
 import { connectToDatabase } from '@/db/mongodbClient';
+import { sanitizeUsername, sanitizeTaskText, isValidObjectId } from '@/lib/sanitize';
+import rateLimiter, { getClientIdentifier } from '@/lib/rateLimit';
+import { headers } from 'next/headers';
 
 const COLLECTION_NAME = process.env.MONGODB_COLLECTION || 'users';
+
+/**
+ * Check if a user exists by username
+ * @param {string} username - Username to check
+ * @returns {Object} Result with exists boolean and userId if found
+ */
+export async function checkUserExists(username) {
+  const sanitized = sanitizeUsername(username);
+  
+  if (!sanitized) {
+    return { exists: false, error: 'Invalid username format' };
+  }
+  
+  try {
+    const { db } = await connectToDatabase();
+    const user = await db.collection(COLLECTION_NAME).findOne({ 
+      username: { $regex: new RegExp(`^${sanitized}$`, 'i') }
+    });
+    
+    if (user) {
+      return { 
+        exists: true, 
+        userId: user._id,
+        username: user.username 
+      };
+    }
+    
+    return { exists: false };
+  } catch (error) {
+    console.error('Error checking user existence:', error);
+    return { exists: false, error: error.message };
+  }
+}
+
+/**
+ * Create a new user (wrapper for createUser with different return format)
+ * @param {string} username - The username to create
+ * @returns {Object} Result of the operation with userData
+ */
+export async function createNewUser(username) {
+  try {
+    const result = await createUser(username);
+    
+    if (result.success) {
+      return {
+        success: true,
+        userData: {
+          userId: result.user.userId,
+          username: result.user.username,
+          createdAt: result.user.createdAt
+        }
+      };
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error in createNewUser:', error);
+    return {
+      success: false,
+      error: error.message,
+      localOnly: true
+    };
+  }
+}
 
 /**
  * Creates a new user in the database
@@ -10,8 +77,21 @@ const COLLECTION_NAME = process.env.MONGODB_COLLECTION || 'users';
  * @returns {Object} Result of the operation
  */
 export async function createUser(username) {
-  if (!username || typeof username !== 'string' || username.trim() === '') {
-    return { success: false, error: 'Valid username is required' };
+  // Rate limiting: max 5 user creations per hour per IP
+  const headersList = await headers();
+  const clientId = getClientIdentifier(headersList);
+  
+  if (rateLimiter.isRateLimited(`create-user-${clientId}`, 5, 3600000)) {
+    return { 
+      success: false, 
+      error: 'Too many requests. Please try again later.' 
+    };
+  }
+  
+  const sanitized = sanitizeUsername(username);
+  
+  if (!sanitized) {
+    return { success: false, error: 'Invalid username. Use 3-30 characters (letters, numbers, spaces, hyphens, underscores only)' };
   }
 
   try {
@@ -20,7 +100,7 @@ export async function createUser(username) {
     
     // Check if username already exists
     const existingUser = await collection.findOne({ 
-      username: { $regex: new RegExp(`^${username}$`, 'i') } 
+      username: { $regex: new RegExp(`^${sanitized}$`, 'i') } 
     });
     
     if (existingUser) {
@@ -33,7 +113,7 @@ export async function createUser(username) {
     
     const result = await collection.insertOne({
       _id: userId,
-      username,
+      username: sanitized,
       createdAt: timestamp,
       updatedAt: timestamp,
       settings: {
@@ -46,7 +126,7 @@ export async function createUser(username) {
     if (result.acknowledged) {
       return { 
         success: true, 
-        user: { userId, username, createdAt: timestamp } 
+        user: { userId, username: sanitized, createdAt: timestamp } 
       };
     } else {
       return { success: false, error: 'Failed to create user' };
@@ -67,14 +147,27 @@ export async function createUser(username) {
  * @returns {Object} User data or error
  */
 export async function getUserByUsername(username) {
-  if (!username) {
-    return { success: false, error: 'Username is required' };
+  // Rate limiting: max 20 requests per minute per IP
+  const headersList = await headers();
+  const clientId = getClientIdentifier(headersList);
+  
+  if (rateLimiter.isRateLimited(`get-user-${clientId}`, 20, 60000)) {
+    return { 
+      success: false, 
+      error: 'Too many requests. Please try again later.' 
+    };
+  }
+  
+  const sanitized = sanitizeUsername(username);
+  
+  if (!sanitized) {
+    return { success: false, error: 'Invalid username format' };
   }
   
   try {
     const { db } = await connectToDatabase();
     const user = await db.collection(COLLECTION_NAME).findOne({ 
-      username: { $regex: new RegExp(`^${username}$`, 'i') }
+      username: { $regex: new RegExp(`^${sanitized}$`, 'i') }
     });
     
     if (!user) {
@@ -106,9 +199,38 @@ export async function getUserByUsername(username) {
  * @returns {Object} Result of operation
  */
 export async function saveTasks(userId, tasks) {
-  if (!userId) {
-    return { success: false, error: 'User ID is required' };
+  // Rate limiting: max 30 saves per minute per user
+  if (rateLimiter.isRateLimited(`save-tasks-${userId}`, 30, 60000)) {
+    return { 
+      success: false, 
+      error: 'Too many save requests. Please try again later.' 
+    };
   }
+  
+  if (!userId || !isValidObjectId(userId)) {
+    return { success: false, error: 'Invalid user ID' };
+  }
+  
+  if (!Array.isArray(tasks)) {
+    return { success: false, error: 'Tasks must be an array' };
+  }
+  
+  // Sanitize all task texts
+  const sanitizedTasks = tasks.map(task => {
+    if (!task || typeof task !== 'object') {
+      return null;
+    }
+    
+    const sanitizedText = sanitizeTaskText(task.text);
+    if (!sanitizedText) {
+      return null;
+    }
+    
+    return {
+      ...task,
+      text: sanitizedText
+    };
+  }).filter(Boolean); // Remove any null entries
   
   try {
     const { db } = await connectToDatabase();
@@ -118,7 +240,7 @@ export async function saveTasks(userId, tasks) {
       { _id: userId },
       { 
         $set: { 
-          tasks: tasks,
+          tasks: sanitizedTasks,
           updatedAt: new Date().toISOString() 
         } 
       }

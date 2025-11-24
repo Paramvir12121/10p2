@@ -8,6 +8,7 @@ import { DashProvider } from "@/provider/dashContext";
 import { BackgroundProvider } from "@/components/main/background/background.jsx";
 import { DraggableProvider } from "@/provider/draggableContext";
 import UsernamePrompt from '@/components/UsernamePrompt';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,30 +21,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Awsome Focus",
-  description: "Awsome",
+  title: "Awesome Focus",
+  description: "Productivity timer app with focus tracking",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`} >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystemdisableTransitionOnChange>
-          <DashProvider>
-            <BackgroundProvider>
-              <DraggableProvider>
-                <UsernamePrompt />
-                <div className="flex flex-col min-h-screen overflow-hidden">
-                  <main className="flex-1 pb-24">
-                    {children}
-                  </main>
-                  <Navbar className="bottom-10" />
-                  <Footer />
-                </div>
-                <Toaster richColors position="top-center" />
-              </DraggableProvider>
-            </BackgroundProvider>
-          </DashProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ErrorBoundary>
+            <DashProvider>
+              <BackgroundProvider>
+                <DraggableProvider>
+                  <UsernamePrompt />
+                  <div className="flex flex-col min-h-screen overflow-hidden">
+                    <main className="flex-1 pb-24">
+                      {children}
+                    </main>
+                    <Navbar className="bottom-10" />
+                    <Footer />
+                  </div>
+                  <Toaster richColors position="top-center" />
+                </DraggableProvider>
+              </BackgroundProvider>
+            </DashProvider>
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>
