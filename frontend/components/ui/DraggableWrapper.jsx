@@ -181,14 +181,15 @@ export default function DraggableWrapper({
     <div 
       ref={elementRef}
       className={cn(
-        "absolute",
-        isDragging && "cursor-grabbing",
+        "absolute transition-shadow",
+        isDragging && "cursor-grabbing shadow-2xl scale-[1.02]",
         className
       )}
       style={{ 
         left: position.x,
         top: position.y,
-        zIndex: isDragging ? zIndex + 10 : zIndex
+        zIndex: isDragging ? zIndex + 10 : zIndex,
+        transition: isDragging ? 'box-shadow 0.2s, transform 0.2s' : 'none'
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}

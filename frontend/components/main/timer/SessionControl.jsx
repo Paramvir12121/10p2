@@ -14,7 +14,8 @@ const SessionControl = ({
     <div className="w-full flex flex-col md:flex-row justify-between items-center gap-1 mt-1 bg-gradient-to-r from-slate-50/80 to-slate-100/80 dark:from-slate-900/80 dark:to-slate-800/80 p-1.5 rounded-sm border border-slate-200 dark:border-slate-800">
       <div className="flex-grow text-center md:text-left">
         <h3 className="text-[12px] font-medium flex items-center justify-center md:justify-start gap-1 text-slate-700 dark:text-slate-300">
-          <Timer className="h-2.5 w-2.5 text-primary/70" /> Session Info
+          <Timer className="h-2.5 w-2.5 text-primary/70" /> 
+          {workRunning ? 'Working...' : breakTimerRunning ? 'On Break' : 'Session'}
         </h3>
         
         <div className="text-[11px] text-slate-500 mt-0.5">

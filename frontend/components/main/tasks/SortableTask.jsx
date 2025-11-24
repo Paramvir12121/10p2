@@ -178,13 +178,14 @@ export function SortableTask({
         <div className="flex items-center gap-1 py-1 px-1.5">
           <button
             onClick={handleToggle}
-            className={`flex-none w-3.5 h-3.5 ${!completed ? 'text-primary/80 hover:text-primary' : 'text-slate-400 hover:text-slate-500'} transition-colors task-action`}
+            className={`flex-none w-3.5 h-3.5 ${!completed ? 'text-primary/80 hover:text-primary hover:scale-110' : 'text-green-500 hover:text-green-600'} transition-all task-action`}
             aria-label={completed ? "Mark as incomplete" : "Mark as complete"}
+            title={completed ? "Mark as incomplete" : "Mark as complete"}
           >
             {completed ? (
-              <CheckCircle className="h-3 w-3" />
+              <CheckCircle className="h-3 w-3 fill-green-500/20" />
             ) : (
-              <Circle className={`h-3 w-3 ${isCompleting ? 'scale-90' : ''}`} />
+              <Circle className={`h-3 w-3 ${isCompleting ? 'scale-90' : ''} transition-transform`} />
             )}
           </button>
           
@@ -211,8 +212,8 @@ export function SortableTask({
           {!isDragOverlay && !completed && (
             <div 
               {...safeListeners}
-              className="flex-none w-3.5 h-3.5 text-slate-400 cursor-grab active:cursor-grabbing hover:text-primary/70 transition-colors task-action"
-              title="Drag to reorder or set as focus"
+              className="flex-none w-3.5 h-3.5 text-slate-400 cursor-grab active:cursor-grabbing hover:text-primary/70 hover:scale-110 transition-all task-action"
+              title="Drag to reorder or drop on focus area"
             >
               <GripVertical className="h-3 w-3" />
             </div>
@@ -233,8 +234,9 @@ export function SortableTask({
                 e.stopPropagation();
                 onDelete();
               }}
-              className="flex-none w-3.5 h-3.5 text-slate-400 hover:text-red-500/80 transition-colors task-action"
+              className="flex-none w-3.5 h-3.5 text-slate-400 hover:text-red-500/80 hover:scale-110 transition-all task-action"
               aria-label="Delete task"
+              title="Delete this task"
             >
               <Trash2 className="h-3 w-3" />
             </button>

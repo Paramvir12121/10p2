@@ -54,11 +54,12 @@ const MainTask = ({
                         <Button 
                             size="sm" 
                             variant="outline" 
-                            className="h-6 text-[12px] px-1.5 py-0 rounded-sm"
+                            className="h-6 text-[12px] px-1.5 py-0 rounded-sm hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-950 dark:hover:text-green-300 transition-colors"
                             onClick={() => onComplete(focusTask.id)}
+                            title="Mark task as complete (removes from focus)"
                         >
                             <CheckCircle className="h-3 w-3 mr-1" />
-                            Complete
+                            Done
                         </Button>
                     )}
                     <div className="card-header h-6 w-6 flex items-center justify-center rounded-sm hover:bg-muted/80">

@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect, memo } from "react";
 import { Button } from "../../ui/button";
-import { toast } from "sonner";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Play, Pause, RefreshCcw, Clock, Coffee, ZapOff, ChevronDown, ChevronUp, GripVertical } from "lucide-react";
 import { useDashContext } from "@/provider/dashContext";
 import SessionControl, { StandaloneSessionControl } from "./SessionControl";
+import { showBreakEarned, showInfo, showSuccess } from "@/lib/toastHelpers";
 
 export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }) {
   // Work timer states and general states
@@ -86,10 +86,7 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
     if (workRunning && workTime > 0 && workTime % EARN_INTERVAL === 0) {
       setEarnedBreakTime(prevTime => prevTime + BREAK_REWARD);
       
-      toast.success("Break Time Earned!", {
-        description: `You've earned ${BREAK_REWARD / 60} minute of break time.`,
-        duration: 4000,
-      });
+      showBreakEarned(BREAK_REWARD / 60);
     }
   }, [workTime, workRunning]);
 
@@ -159,9 +156,8 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
 
   const handleBreakStart = () => {
     if (earnedBreakTime <= 0) {
-      toast.error("No break time available", {
-        description: "You need to work first to earn break time.",
-        duration: 3000,
+      showInfo("No break time available", {
+        description: "Work first to earn break time.",
       });
       return;
     }
@@ -188,9 +184,8 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
     setEarnedBreakTime(0);
     setBreakProgress(0);
     
-    toast.info("Break Ended", {
-      description: "Your break has ended. Time to get back to work!",
-      duration: 3000,
+    showInfo("Break ended", {
+      description: "Time to get back to work!",
     });
   };
 
@@ -211,9 +206,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
       addTimerSessioninfo(workTime, earnedBreakTime, false);
     }
     
-    toast.success("Session Ended", {
-      description: "Your session has been saved.",
-      duration: 3000,
+    const minutes = Math.floor(workTime / 60);
+    showSuccess("Session saved! 💾", {
+      description: `Worked for ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`,
     });
   };
 
@@ -283,8 +278,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="destructive" 
                           size="sm" 
-                          className="h-6 text-[13px] px-2 flex-1 rounded-sm"
+                          className="h-6 text-[13px] px-2 flex-1 rounded-sm hover:bg-destructive/90"
                           onClick={handleWorkStop}
+                          title="Pause work timer"
                         >
                           <Pause className="h-3 w-3 mr-1" /> Pause
                         </Button>
@@ -292,8 +288,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="default" 
                           size="sm" 
-                          className="bg-indigo-600 h-6 text-[13px] px-2 flex-1 rounded-sm"
+                          className="bg-indigo-600 h-6 text-[13px] px-2 flex-1 rounded-sm hover:bg-indigo-700 active:scale-95 transition-transform"
                           onClick={handleWorkStart}
+                          title="Start work timer"
                         >
                           <Play className="h-3 w-3 mr-1" /> Start
                         </Button>
@@ -301,8 +298,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-6 w-6 p-0 rounded-sm"
+                        className="h-6 w-6 p-0 rounded-sm hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
                         onClick={handleWorkReset}
+                        title="Reset work timer"
                       >
                         <RefreshCcw className="h-3 w-3" />
                       </Button>
@@ -357,8 +355,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="destructive" 
                           size="sm" 
-                          className="h-6 text-[13px] px-2 flex-1 rounded-sm" 
+                          className="h-6 text-[13px] px-2 flex-1 rounded-sm hover:bg-destructive/90" 
                           onClick={handleBreakStop}
+                          title="Pause break timer"
                         >
                           <Pause className="h-3 w-3 mr-1" /> Pause
                         </Button>
@@ -366,9 +365,10 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                         <Button 
                           variant="default" 
                           size="sm" 
-                          className="bg-green-600 h-6 text-[13px] px-2 flex-1 rounded-sm"
+                          className="bg-green-600 h-6 text-[13px] px-2 flex-1 rounded-sm hover:bg-green-700 active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleBreakStart}
                           disabled={earnedBreakTime <= 0}
+                          title={earnedBreakTime <= 0 ? "Work first to earn break time" : "Start break timer"}
                         >
                           <Coffee className="h-3 w-3 mr-1" /> Break
                         </Button>
@@ -376,8 +376,9 @@ export default function DoubleTimer({ addTimerSessioninfo, getTimerSessioninfo }
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-6 w-6 p-0 rounded-sm"
+                        className="h-6 w-6 p-0 rounded-sm hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
                         onClick={handleBreakEnd}
+                        title="End break and clear earned time"
                       >
                         <ZapOff className="h-3 w-3" />
                       </Button>

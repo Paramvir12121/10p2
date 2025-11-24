@@ -117,9 +117,17 @@ const Tasks = ({
     return (
         <Card className="rounded-md border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden ">
             <div className="flex items-center justify-between p-1.5 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 card-header">
-                <div className="flex items-center gap-1 text-[13px] font-medium">
+                <div className="flex items-center gap-1.5 text-[13px] font-medium">
                     <ListTodo className="h-3.5 w-3.5 text-primary/70" />
-                    Task List
+                    <span>Tasks</span>
+                    {tasks.length > 0 && (
+                        <span className="text-[11px] px-1.5 py-0.5 bg-primary/10 text-primary rounded-full font-normal">
+                            {filteredTasks.length}/{tasks.length}
+                        </span>
+                    )}
+                    {(searchQuery || tagFilter) && (
+                        <span className="text-[10px] text-muted-foreground">filtered</span>
+                    )}
                 </div>
                 
                 <div className="flex items-center gap-1">
@@ -252,13 +260,37 @@ const Tasks = ({
                     <SortableContext items={filteredTasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-1 overflow-y-auto max-h-[35vh] pr-1">
                             {filteredTasks.length === 0 ? (
-                                <div className="text-center py-3 text-slate-500 text-[13px] bg-slate-50 dark:bg-slate-900/30 rounded-sm">
-                                    {searchQuery 
-                                        ? `No tasks matching "${searchQuery}"`
-                                        : tagFilter
-                                        ? `No tasks with tag "${tagFilter}"`
-                                        : "No tasks found"
-                                    }
+                                <div className="text-center py-6 px-4 text-slate-500 bg-slate-50 dark:bg-slate-900/30 rounded-sm">
+                                    {searchQuery ? (
+                                        <>
+                                            <div className="text-[14px] font-medium mb-1">No matches found</div>
+                                            <div className="text-[12px] text-slate-400">Try a different search term</div>
+                                        </>
+                                    ) : tagFilter ? (
+                                        <>
+                                            <div className="text-[14px] font-medium mb-1">No tasks with tag "{tagFilter}"</div>
+                                            <div className="text-[12px] text-slate-400">Add tags to organize tasks</div>
+                                        </>
+                                    ) : activeTab === 'completed' ? (
+                                        <>
+                                            <div className="text-[14px] font-medium mb-1">No completed tasks</div>
+                                            <div className="text-[12px] text-slate-400">Complete tasks to see them here</div>
+                                        </>
+                                    ) : activeTab === 'active' ? (
+                                        <>
+                                            <div className="text-[14px] font-medium mb-1">No active tasks</div>
+                                            <div className="text-[12px] text-slate-400">All tasks are completed! 🎉</div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="text-[14px] font-medium mb-1">No tasks yet</div>
+                                            <div className="text-[12px] text-slate-400 mt-2 space-y-1">
+                                                <div>• Type above to add a task</div>
+                                                <div>• Press <kbd className="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[11px]">Enter</kbd> to save</div>
+                                                <div>• Press <kbd className="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[11px]">Ctrl+N</kbd> to focus input</div>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             ) : (
                                 filteredTasks.map(task => (
